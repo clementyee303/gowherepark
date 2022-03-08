@@ -32,6 +32,7 @@ export default {
 			<router-view :theme="appTheme" />
 		</transition>
 
+	
 		<!-- Scroll to top -->
 		<back-to-top
 			visibleoffset="500"
@@ -41,6 +42,8 @@ export default {
 		>
 			<i data-feather="chevron-up"></i>
 		</back-to-top>
+
+	
 
 		<!-- App footer -->
 		<AppFooter />
