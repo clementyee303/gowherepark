@@ -3,6 +3,7 @@ import App from './App.vue';
 import router from './router';
 import './assets/css/app.css';
 import BackToTop from 'vue-backtotop';
+import './assets/tailwind.css'
 
 const feather = require('feather-icons');
 feather.replace();
