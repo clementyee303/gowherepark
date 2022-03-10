@@ -1,18 +1,16 @@
 <script>
-
+import SearchForm from "@/components/SearchForm.vue";
 
 export default {
-	name: 'Locate',
-	components: {
-	},
+  name: "Locate",
+  components: {
+    SearchForm,
+  },
 };
 </script>
 
 <template>
-	<div class="container mx-auto">
-	<h1> Locate Page </h1>
-
-	</div>
+  <SearchForm />
 </template>
 
 <style scoped></style>
