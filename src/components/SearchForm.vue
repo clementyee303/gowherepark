@@ -46,6 +46,7 @@
             min="1.8"
             max="4.5"
             step="0.1"
+            value="1.8"
             onchange=""
             oninput="heightOutputId.value = rangeInput.value"
           />
