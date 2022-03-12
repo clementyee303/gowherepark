@@ -69,15 +69,11 @@ export default {
   <!-- right header section -->
   <div class="flex items-center space-x-2">
    <Button
-						title="Logout"
+						title="Log In"
 						class="text-md font-general-medium bg-indigo-500 hover:bg-indigo-600 text-white shadow-sm rounded-md px-3 py-2.5 duration-300"
-						@click="$emit('logout-update', 1)"
-						aria-label="Log out"
+						@click="$emit('call-login', 1)"
+						aria-label="Log In"
 					/>
-	<!-- <button 
-		class="text-md font-general-medium bg-indigo-500 hover:bg-indigo-600 text-white shadow-sm rounded-md px-3 py-2.5 duration-300"
-		@click="$emit('display-change', 2)"> Logout </button> -->
-
       
     
     

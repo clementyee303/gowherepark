@@ -2,15 +2,21 @@
 import feather from 'feather-icons';
 import AppHeaderLogin from './components/shared/AppHeaderLogin';
 import AppFooter from './components/shared/AppFooter';
+import AppHeaderGuest from './components/shared/AppHeaderGuest';
+// import Login from './views/Login';
 
 export default {
 	components: {
 		AppHeaderLogin,
 		AppFooter,
+		AppHeaderGuest,
+		// Login,
 	},
 	data: () => {
 		return {
 			appTheme: localStorage.getItem('theme'),
+			display: 1,
+			dontshow: false,
 		};
 	},
 	mounted() {
@@ -19,13 +25,28 @@ export default {
 	updated() {
 		feather.replace();
 	},
+	methods: {
+		goToLogin() {
+			this.$router.push('/Login');
+		},
+		loginSuccess() {
+			this.display = 2;
+			this.$router.push('/Home');
+		},
+		logoutSuccess() {
+			this.display = 2;
+			this.$router.push('/Home');
+		} 
+	}
 };
 </script>
 
 <template>
 	<div :class="appTheme" class="pt-0.5">
 		<!-- App header -->
-		<AppHeaderLogin />
+		<div v-show = "display == 1"><AppHeaderLogin @logout-update="logoutSuccess()"/></div>
+		<div v-show = "display == 2"><AppHeaderGuest @call-login="goToLogin()"/></div>
+		<!-- <div v-show="dontshow"><Login @login-success="loginSuccess()"/></div> -->
 
 		<!-- Render active component contents with vue transition -->
 		<transition name="fade" mode="out-in">

@@ -17,7 +17,7 @@
             <Button
               title="Sign In"
               class="text-md font-general-medium bg-indigo-500 hover:bg-indigo-600 text-white shadow-sm rounded-md px-5 py-2.5 duration-300"
-              @click="placeholder()"
+              @click="$emit('login-update', 1)"
               aria-label="Sign In"
             />
             <br><br><br>
@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     placeholder() {
-      console.log("test");
+      this.$router.push('/Home');
     }
   }
 };

@@ -10,17 +10,19 @@ data() {
     return {
       Display: 1
 	}
-}
+},
+methods: {
+	goToHome() {
+		this.$router.push('/Home');
+	}
+},
 
 };
 </script>
 
 <template>
 	<div v-if = "Display === 1">
-		<LoginForm/>
-	</div>
-	<div v-else-if = "Display === 2">
-		<LoginForm/>
+		<LoginForm @login-update="$emit('login-success', 2)"/>
 	</div>
 </template>
 

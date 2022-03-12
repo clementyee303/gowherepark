@@ -19,9 +19,6 @@ data() {
 	<div v-if = "Display === 1">
 		<SignUpForm/>
 	</div>
-	<div v-else-if = "Display === 2">
-		<SignUpForm/>
-	</div>
 </template>
 
 <style scoped></style>
