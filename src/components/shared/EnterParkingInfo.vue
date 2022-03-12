@@ -17,13 +17,13 @@
 					<label class="block mb-3 text-gray-600" for="">Start Duration</label>
 					<div class="grid grid-cols-3 gap-1">
 						
-						<button class="text-xl text-center border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest mr-6">
+						<button @click = "decrease" class="text-xl text-center border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest mr-6">
 						-
 						</button>
 						<select class="text-center border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest mr-6">
-						<option>4 HR 0 MIN</option>
+						<option>{{SessionTime}}</option>
 						</select>
-						<button class="text-xl text-center border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest mr-6">
+						<button @click = "increase" class="text-xl text-center border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest mr-6">
 						+
 						</button>
 				
@@ -33,7 +33,7 @@
 				<span class="inline-block text-left  font-bold">
 					{{ total }}Current Carpark Rate: $xx
 					<br><br>
-					{{ total }}Session Start Time: Date
+					{{ total }}Session Start Time: {{StartTime}}
 					<br><br>
 					{{ total }}Session End Time: Date
 					<br><br>
@@ -51,3 +51,33 @@
 </template>
 
 
+<script>
+export default {
+ name: "EnterParking",
+data() {
+    return {
+		SessionTime: 0,
+		StartTime: ""
+	}
+ },
+ created() {
+	setInterval(this.getNow, 1000);
+ },
+methods: {
+	decrease() {
+		return this.SessionTime--
+	},
+	increase() {
+		return this.SessionTime++
+	},
+	getNow: function() {
+                    const today = new Date();
+                    const date = +today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
+                    const time = today.getHours() + ":" + today.getMinutes();
+                    const dateTime = date +' '+ time;
+                    this.StartTime = dateTime;
+                }
+}
+
+};
+</script>
