@@ -64,6 +64,33 @@ const routes = [
 			title: 'Checkout',
 		},
 	},
+	{
+		path: '/Login',
+		name: 'Login',
+		component: () =>
+			import( '../views/Login.vue'),
+		meta: {
+			title: 'Login',
+		},
+	},
+	{
+		path: '/SignUp',
+		name: 'SignUp',
+		component: () =>
+			import( '../views/SignUp.vue'),
+		meta: {
+			title: 'SignUp',
+		},
+	},
+	{
+		path: '/ForgotPassword',
+		name: 'ForgotPassword',
+		component: () =>
+			import( '../views/ForgotPassword.vue'),
+		meta: {
+			title: 'ForgotPassword',
+		},
+	},
 ];
 
 const router = createRouter({
