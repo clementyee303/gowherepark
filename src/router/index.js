@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-
 const routes = [
 	{
 		path: '/',
@@ -33,7 +32,7 @@ const routes = [
 		path: '/Payment',
 		name: 'Payment',
 		component: () =>
-			import( '../views/Payment.vue'),
+			import('../views/Payment.vue'),
 		meta: {
 			title: 'Payment',
 		},
@@ -54,6 +53,15 @@ const routes = [
 			import( '../views/Bookmark.vue'),
 		meta: {
 			title: 'Bookmark',
+		},
+	},
+	{
+		path: '/Checkout',
+		name: 'Checkout',
+		component: () =>
+			import( '../views/Checkout.vue'),
+		meta: {
+			title: 'Checkout',
 		},
 	},
 ];
