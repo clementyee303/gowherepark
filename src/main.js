@@ -4,6 +4,8 @@ import router from './router';
 import './assets/css/app.css';
 import BackToTop from 'vue-backtotop';
 import './assets/tailwind.css'
+import VueChartkick from 'vue-chartkick'
+import 'chartkick/chart.js'
 
 const feather = require('feather-icons');
 feather.replace();
@@ -11,6 +13,7 @@ feather.replace();
 createApp(App)
 	.use(router)
 	.use(BackToTop)
+	.use(VueChartkick)
 	.mount('#app');
 
 const appTheme = localStorage.getItem('theme');
