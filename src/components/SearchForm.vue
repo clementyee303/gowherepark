@@ -51,7 +51,7 @@
             oninput="heightOutputId.value = rangeInput.value"
           />
           <br />
-          <label for="rangeInput"> Car Park Height Limit:</label>
+          <label for="rangeInput">Minimum Car Park Height Limit:</label>
           <output id="heightOutputId">1.8</output>
         </form>
       </div>
@@ -178,9 +178,6 @@ input[type="search"] {
   padding: 5px 10px;
   margin-left: 8px;
 }
-#rangeInput {
-  direction: rtl;
-}
 #searchButton {
   /* remove default behavior */
   appearance: none;
@@ -188,11 +185,14 @@ input[type="search"] {
   /* usual styles */
   padding: 10px;
   border: none;
-  background-color: #3f51b5;
+  background-color: #6366f1;
   color: #fff;
   font-weight: 600;
   border-radius: 5px;
   width: 150px;
+}
+#searchButton:hover {
+  background-color: #4f46e5;
 }
 .pac-icon {
   display: none;

@@ -57,57 +57,65 @@ export default {
 <template>
   <div id="locate">
     <SearchForm />
-    <div id="fixed">
-      <div id="dropdown-outer">
-        <label for="sortoptions" id="sort">Sort By</label>
-        <select name="sortoptions" id="sortoptions">
-          <option value="distance">Distance</option>
-          <option value="lots">No. of Lots</option>
-          <option value="rates">Parking Rates</option>
-        </select>
-      </div>
-      <div id="scrollable">
-        <ul>
-          <li v-for="carpark in CarParks" :key="carpark.id">
-            <Carpark
-              :name="carpark.name"
-              :distance="carpark.distance"
-              :numLots="carpark.numLots"
-              :carparkType="carpark.carparkType"
-              :marginTop="carpark.marginTop"
-              :priceEntry="carpark.priceEntry"
-              :priceHr="carpark.priceHr"
-              :textColor="carpark.textColor"
-              :isGantry="carpark.isGantry"
-              :isFav="carpark.isFav"
-            ></Carpark>
-          </li>
-        </ul>
-      </div>
+    <div id="navbar">
+      <h4 id="title">Nearest Car Parks</h4>
+      <label for="sortoptions" id="sort">Sort By</label>
+      <select name="sortoptions" id="sortoptions">
+        <option value="distance">Distance</option>
+        <option value="lots">No. of Lots</option>
+        <option value="rates">Parking Rates</option>
+      </select>
+    </div>
+    <div id="scrollable">
+      <ul>
+        <li v-for="carpark in CarParks" :key="carpark.id">
+          <Carpark
+            :name="carpark.name"
+            :distance="carpark.distance"
+            :numLots="carpark.numLots"
+            :carparkType="carpark.carparkType"
+            :marginTop="carpark.marginTop"
+            :priceEntry="carpark.priceEntry"
+            :priceHr="carpark.priceHr"
+            :textColor="carpark.textColor"
+            :isGantry="carpark.isGantry"
+            :isFav="carpark.isFav"
+          ></Carpark>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
 
 <style scoped>
-#fixed {
-  margin: auto;
-  width: 50%;
-  height: 100%;
+h4 {
+  font-size: 25px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+#locate {
   display: flex;
   flex-direction: column;
   text-align: center;
   justify-content: center;
   flex-wrap: wrap;
+  padding-left: 5%;
+  padding-right: 5%;
 }
-#dropdown-outer {
-  text-align: right;
+#navbar {
+  display: flex;
+  flex-direction: row;
   padding: 10px;
+  align-items: center;
+}
+#title {
+  text-align: left;
 }
 #sort {
   padding-right: 10px;
+  margin-left: auto;
 }
 #sortoptions {
-  width: 100%;
   padding: 5px;
   border-radius: 10px;
   width: 130px;
