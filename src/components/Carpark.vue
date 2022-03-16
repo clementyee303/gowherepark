@@ -16,12 +16,9 @@
         ${{ priceEntry }}/entry
       </h5>
       <h5 id="carpark-pricehr">${{ priceHr }}/hr</h5>
-      <input
-        id="getdirection"
-        type="button"
-        onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=1.3070951997851268,103.78838833991956&travelmode=driving');"
-        value="Directions"
-      />
+      <button id="getdirection" type="button" @click="getDirections">
+        Directions
+      </button>
       <br />
       <button v-show="isGantry" type="button" onclick="" id="startsession">
         Start Parking
@@ -56,6 +53,15 @@ export default {
     textColor: { default: "black", type: String },
     isGantry: Boolean,
     isFav: { default: "black", type: String },
+    directions: String,
+    lat: Number,
+    lng: Number,
+  },
+  methods: {
+    getDirections: function () {
+      let url = `https://www.google.com/maps/dir/?api=1&destination=${this.lat},${this.lng}&travelmode=driving`;
+      window.open(url, "_blank");
+    },
   },
 };
 </script>
