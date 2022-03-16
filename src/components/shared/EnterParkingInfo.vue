@@ -65,7 +65,8 @@ data() {
  },
 methods: {
 	decrease() {
-		return this.SessionTime--
+		if(this.SessionTime > 0)
+			return this.SessionTime--
 	},
 	increase() {
 		return this.SessionTime++
