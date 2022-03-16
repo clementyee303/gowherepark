@@ -10,53 +10,20 @@ export default {
   },
   data() {
     return {
-      CarParks: [
-        {
-          id: 1,
-          name: "The Star Vista",
-          distance: 2.34,
-          numLots: 27,
-          carparkType: "Gantry",
-          marginTop: "58px",
-          priceEntry: 2.5,
-          priceHr: 1.2,
-          textColor: "red",
-          isGantry: false,
-          isFav: "red",
-        },
-        {
-          id: 2,
-          name: "The Star Vista",
-          distance: 2.34,
-          numLots: "-",
-          carparkType: "Coupon",
-          marginTop: "30px",
-          priceEntry: 2.5,
-          priceHr: 1.2,
-          textColor: "green",
-          isGantry: true,
-        },
-        {
-          id: 3,
-          name: "The Star Vista",
-          distance: 2.34,
-          numLots: 27,
-          carparkType: "Gantry",
-          marginTop: "58px",
-          priceEntry: 2.5,
-          priceHr: 1.2,
-          textColor: "red",
-          isGantry: false,
-        },
-      ],
+      CarParks: [],
     };
+  },
+  methods: {
+    addCarparks: function (val) {
+      this.CarParks = val;
+    },
   },
 };
 </script>
 
 <template>
   <div id="locate">
-    <SearchForm />
+    <SearchForm @addCarparks="addCarparks" />
     <div id="navbar">
       <h4 id="title">Nearest Car Parks</h4>
       <label for="sortoptions" id="sort">Sort By</label>
@@ -80,6 +47,8 @@ export default {
             :textColor="carpark.textColor"
             :isGantry="carpark.isGantry"
             :isFav="carpark.isFav"
+            :lat="carpark.lat"
+            :lng="carpark.lng"
           ></Carpark>
         </li>
       </ul>

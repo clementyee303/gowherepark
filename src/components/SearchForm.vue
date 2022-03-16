@@ -68,6 +68,8 @@
 
 <script>
 /* eslint-disable no-undef */
+import axios from "axios";
+
 export default {
   name: "SearchForm",
   mounted() {
@@ -78,15 +80,30 @@ export default {
     });
   },
   methods: {
+    DegtoRad: function (deg) {
+      return deg * (Math.PI / 180);
+    },
+    GetDist: function (lat1, lon1, lat2, lon2) {
+      var R = 6371; // Radius of the earth in km
+      var dLat = this.DegtoRad(lat2 - lat1);
+      var dLon = this.DegtoRad(lon2 - lon1);
+      var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(this.DegtoRad(lat1)) *
+          Math.cos(this.DegtoRad(lat2)) *
+          Math.sin(dLon / 2) *
+          Math.sin(dLon / 2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      var d = R * c; // Distance in km
+      return Math.round((d + Number.EPSILON) * 100) / 100;
+    },
     GetLocation: function () {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            alert(
-              "Latitude: " +
-                position.coords.latitude +
-                " Longitude: " +
-                position.coords.longitude
+            this.GetCarparks(
+              position.coords.latitude,
+              position.coords.longitude
             );
           },
           (error) => {
@@ -96,6 +113,62 @@ export default {
       } else {
         alert("Geolocation is not supported by this browser.");
       }
+    },
+    GetCarparks: async function (lat, lng) {
+      let carparks = [];
+      let carpark = {};
+      const config = {
+        headers: {
+          AccountKey: "PbRtSOrvQX6aYQSKPmJsRg==",
+          accept: "application/json",
+        },
+      };
+      let urls = [];
+      urls.push("http://localhost:8080/ltaodataservice/CarParkAvailabilityv2");
+      urls.push(
+        "http://localhost:8080/ltaodataservice/CarParkAvailabilityv2?$skip=500"
+      );
+      urls.push(
+        "http://localhost:8080/ltaodataservice/CarParkAvailabilityv2?$skip=1000"
+      );
+      urls.push(
+        "http://localhost:8080/ltaodataservice/CarParkAvailabilityv2?$skip=1500"
+      );
+      urls.push(
+        "http://localhost:8080/ltaodataservice/CarParkAvailabilityv2?$skip=2000"
+      );
+      for (let i = 0; i < urls.length; i++) {
+        let received = await axios.get(urls[i], config);
+        let array = received.data.value;
+        array.forEach((item) => {
+          let carparkLat = Number(item.Location.split(" ")[0]);
+          let carparkLng = Number(item.Location.split(" ")[1]);
+          if (this.GetDist(carparkLat, carparkLng, lat, lng) < 0.7) {
+            carpark["name"] = item.Development;
+            carpark["distance"] = this.GetDist(
+              carparkLat,
+              carparkLng,
+              lat,
+              lng
+            );
+            carpark["numLots"] = item.AvailableLots;
+            carpark["carparkType"] = "Gantry";
+            carpark["marginTop"] = "58px";
+            carpark["priceEntry"] = 2.5;
+            carpark["priceHr"] = 1.27;
+            if (item.AvailableLots < 10) {
+              carpark["textColor"] = "red";
+            }
+            carpark["isGantry"] = false;
+            carpark["lat"] = carparkLat;
+            carpark["lng"] = carparkLng;
+            carparks.push(carpark);
+            carpark = {};
+          }
+        });
+      }
+      console.log("DONE");
+      this.$emit("addCarparks", carparks);
     },
     GetAddressLatLng: function () {
       var geocoder = new google.maps.Geocoder();
