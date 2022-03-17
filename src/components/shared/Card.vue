@@ -36,19 +36,25 @@
      :maxlength ="4"/>
     </div>
    </div>
-   
-   <div>
-    <button @click="finishPayment" class="w-full text-ceenter px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold">
-     Confirm Payment
-    </button>
+
+    <Modal v-show="showModal" @close-modal="showModal = false" />
+    <div class="save-btn">
+    <button class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold" @click="showModal = true">Confirm Payment</button>
+</div>
+
    </div>
   </div>
- </div>
  </form>
 </template>
+
 <script>
+import Modal from '@/components/shared/Modal.vue'
+
 export default {
  name: "Payment",
+ components: {
+   Modal,
+ },
 data() {
     return {
       fields: {
@@ -56,8 +62,9 @@ data() {
         cardName: '',
         cardMonth: '',
         cardYear: '',
-        cardCvv: ''
+        cardCvv: '',
       },
+      showModal: false,
       minCardYear: new Date().getFullYear(),
 	}
  },
@@ -85,15 +92,13 @@ methods: {
     set2: function () {
         this.$set(this.Method, 2)
     },
-    set3: function () {
-        this.$set(this.Method, 3)
-    },
     generateMonthValue(n) {
       return n < 10 ? `0${n}` : n
     },
     updateValue(e) {
       this.cardNumber = e.target.value.replace(/ /g,'');
-    }
+    },
+
 }
 };
 </script>
