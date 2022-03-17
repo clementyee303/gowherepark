@@ -4,7 +4,7 @@ export default {
 		return {
 			copyrightDate: new Date().getFullYear(),
 			projectName: 'BT3103. All rights reserved.',
-			author: '2022 BT3103 Group',
+			author: '2022 BT3103 Group L2-10',
 		};
 	},
 };
