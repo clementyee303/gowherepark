@@ -58,7 +58,7 @@
     </div>
     <div id="layout">
       <div id="button-item">
-        <button id="searchButton" type="button" v-on:click="GetAddressLatLng()">
+        <button id="searchButton" type="button" v-on:click="SearchCarparks()">
           Search
         </button>
       </div>
@@ -101,10 +101,8 @@ export default {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            this.GetCarparks(
-              position.coords.latitude,
-              position.coords.longitude
-            );
+            document.getElementById("addressbox").value =
+              position.coords.latitude + "," + position.coords.longitude;
           },
           (error) => {
             console.log(error.message);
@@ -170,9 +168,16 @@ export default {
       console.log("DONE");
       this.$emit("addCarparks", carparks);
     },
-    GetAddressLatLng: function () {
+    SearchCarparks: function () {
+      /*
+      var address = document.getElementById("addressbox").value;
+      this.GetCarparks(
+        Number(address.split(",")[0]),
+        Number(address.split(",")[1])
+      );*/
       var geocoder = new google.maps.Geocoder();
       var address = document.getElementById("addressbox").value;
+      const that = this;
 
       geocoder.geocode(
         {
@@ -182,7 +187,9 @@ export default {
           if (status == google.maps.GeocoderStatus.OK) {
             var latitude = results[0].geometry.location.lat();
             var longitude = results[0].geometry.location.lng();
-            alert("Latitude: " + latitude + " Longitude: " + longitude);
+            that.GetCarparks(latitude, longitude);
+          } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
+            alert("Please enter a valid address");
           }
         }
       );
