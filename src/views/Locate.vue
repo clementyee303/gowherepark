@@ -20,6 +20,7 @@ export default {
   },
   mounted() {
     this.LoadMap();
+    window.getDirections = this.getDirections;
   },
   methods: {
     addCarparks: function (val) {
@@ -32,7 +33,7 @@ export default {
     },
     LoadMap: function () {
       this.map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 15,
+        zoom: 16,
         center: new google.maps.LatLng(1.29027, 103.851959),
         mapTypeId: google.maps.MapTypeId.ROADMAP,
       });
@@ -47,7 +48,7 @@ export default {
         strokeWeight: 2,
       };
       this.map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 15,
+        zoom: 16,
         center: new google.maps.LatLng(lat, lng),
         mapTypeId: google.maps.MapTypeId.ROADMAP,
       });
@@ -68,11 +69,15 @@ export default {
           infowindow.setContent(
             `<div class="name">${carpark.name}</div>
             <div class="lots">${carpark.numLots} Lots</div>
-            <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving" target="_blank" style="color:blue; text-decoration: underline;">Get Directions</a>`
+            <button type="button" onclick="getDirections(${carpark.lat}, ${carpark.lng})" id="getdirection">Directions</button>`
           );
           infowindow.open(this.map, marker);
         });
       });
+    },
+    getDirections: function (lat, lng) {
+      let url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
+      window.open(url, "_blank");
     },
     SortList: function () {
       let selected = document.getElementById("sortoptions").value;
@@ -180,5 +185,17 @@ ul {
   position: static;
   height: 300px;
   width: 100%;
+}
+#getdirection {
+  /* remove default behavior */
+  appearance: none;
+  -webkit-appearance: none;
+  /* usual styles */
+  border: none;
+  background-color: #b22222;
+  color: #fff;
+  border-radius: 5px;
+  margin-top: 5px;
+  width: 100px;
 }
 </style>
