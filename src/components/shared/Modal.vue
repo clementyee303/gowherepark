@@ -4,7 +4,10 @@
       <h1>Payment Confirmation</h1>
       <p><strong>Your Payment is Successful!</strong></p>
       <p>A confirmation email has been sent to your email.</p>
-      <button>Go Home</button>
+      <router-link :to="{ name: 'Home'	}" 
+			button @click = "getCarPlate" class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold">Go Home</router-link>
+
+
     </div>
     <div class="close" @click="$emit('close-modal')">
       <img class="close-img" src="@/assets/images/close_icon.svg" alt="" />
