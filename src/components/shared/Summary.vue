@@ -4,16 +4,25 @@
             <div class=" p-10 rounded-md shadow-md bg-white">
             <h4 class="text-3xl text-gray-700 mb-5">Payment Details</h4>
 			<span class="inline-block text-left  font-bold">
-				{{ total }} Session Number: XXXX
+				{{ total }} Session Number: 1
 				<br><br>
-				{{ total }} Payer ID: XXXX
+				{{ total }} Payer ID: 1
 				<br><br>
-                {{ total }} Total Price: XXXX
+                {{ total }} Total Price: {{Rates}}
 			</span>
 		</div>
         </div>
 	</form>
 </template>
+
+<script>
+
+ export default {
+    name:'Summary',
+    props: ["Rates"]
+    }
+</script>
+
 
 
   

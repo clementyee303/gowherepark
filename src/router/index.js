@@ -63,6 +63,7 @@ const routes = [
 		meta: {
 			title: 'Checkout',
 		},
+		props: true
 	},
 	{
 		path: '/Login',
