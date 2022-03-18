@@ -2,7 +2,7 @@
   <div class="chart">
     <div class="header">
       <p style="font-size: x-large; text-align: left;">Monthly Expenditures</p>
-      <p style="font-size: small; text-align: left;">{{total}} 969 SGD (January 2021 - January 2022)</p>
+      <p id="totalAmt" style="font-size: small; text-align: left;"> 969 SGD (January 2021 - January 2022)</p>
       <p style="font-size: x-small; color: #FF6161; text-align: left;">+xxx(y%)^past year</p>
     </div>
     <column-chart prefix="$" :data="barChartData" :legend="false" :colors="[['#482BE7']]"></column-chart>
@@ -27,6 +27,7 @@ var barChartData = {"january": Math.random()*500, "february": Math.random()*500,
 
 const total = sum(barChartData)
 console.log("this is total: " + total)
+//document.getElementById("totalAmt").innerHTML = (String(total) + " SGD (January 2021 - January 2022)");
 
   export default {
     name:'MonthlyExpenditures',

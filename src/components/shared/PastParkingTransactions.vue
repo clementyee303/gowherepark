@@ -15,7 +15,7 @@
   </div>
 
   <div id = "display"> 
-      <table id = "table" class = "auto-index" style = "width: 100%;">
+      <table id = "table" class = "auto-index">
           <tr>
             <th>Session ID/ Date</th>
             <th>Amount Paid</th>
@@ -114,10 +114,29 @@ export default {
   }
 }
 
-table, td, th {
+#table{
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
   border: 1px solid #999;
   padding: 0.5rem;
   text-align: center;
+}
+
+th{
+  font-size: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+tr:nth-child(even){
+    background-color: pink;
+}
+
+tr:hover {
+	background: #777;
 }
 
 .navigationButton{
