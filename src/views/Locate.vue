@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable no-undef */
 import SearchForm from "@/components/SearchForm.vue";
 import Carpark from "@/components/Carpark.vue";
 
@@ -11,14 +12,72 @@ export default {
   data() {
     return {
       CarParks: [],
+      lat: null,
+      lng: null,
       componentKey: 0,
+      map: null,
     };
+  },
+  mounted() {
+    this.LoadMap();
+    window.getDirections = this.getDirections;
   },
   methods: {
     addCarparks: function (val) {
       document.getElementById("sortoptions").value = "distance";
-      this.CarParks = val;
+      this.CarParks = val.carparkList;
+      this.lat = val.Lat;
+      this.lng = val.Lng;
       this.CarParks.sort(this.GetSortOrder("distance"));
+      this.AddLocationsToGoogleMaps(this.lat, this.lng);
+    },
+    LoadMap: function () {
+      this.map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 16,
+        center: new google.maps.LatLng(1.29027, 103.851959),
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+      });
+    },
+    AddLocationsToGoogleMaps: function (lat, lng) {
+      const blueDot = {
+        fillColor: "#4285F4",
+        fillOpacity: 1,
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 8,
+        strokeColor: "rgb(255,255,255)",
+        strokeWeight: 2,
+      };
+      this.map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 16,
+        center: new google.maps.LatLng(lat, lng),
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+      });
+      new google.maps.Marker({
+        icon: blueDot,
+        position: new google.maps.LatLng(lat, lng),
+        map: this.map,
+      });
+      let infowindow = new google.maps.InfoWindow();
+      this.CarParks.forEach((carpark) => {
+        lat = carpark.lat;
+        lng = carpark.lng;
+        let marker = new google.maps.Marker({
+          position: new google.maps.LatLng(lat, lng),
+          map: this.map,
+        });
+        google.maps.event.addListener(marker, "click", () => {
+          infowindow.setContent(
+            `<div class="name">${carpark.name}</div>
+            <div class="lots">${carpark.numLots} Lots</div>
+            <button type="button" onclick="getDirections(${carpark.lat}, ${carpark.lng})" id="getdirection">Directions</button>`
+          );
+          infowindow.open(this.map, marker);
+        });
+      });
+    },
+    getDirections: function (lat, lng) {
+      let url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
+      window.open(url, "_blank");
     },
     SortList: function () {
       let selected = document.getElementById("sortoptions").value;
@@ -46,6 +105,7 @@ export default {
 <template>
   <div id="locate">
     <SearchForm @addCarparks="addCarparks" />
+    <div id="map"></div>
     <div id="navbar">
       <h4 id="title">Nearest Car Parks</h4>
       <label for="sortoptions" id="sort">Sort By</label>
@@ -120,5 +180,22 @@ ul {
   width: 100%;
   text-align: center;
   display: inline-block;
+}
+#map {
+  position: static;
+  height: 300px;
+  width: 100%;
+}
+#getdirection {
+  /* remove default behavior */
+  appearance: none;
+  -webkit-appearance: none;
+  /* usual styles */
+  border: none;
+  background-color: #b22222;
+  color: #fff;
+  border-radius: 5px;
+  margin-top: 5px;
+  width: 100px;
 }
 </style>

@@ -166,7 +166,11 @@ export default {
         });
       }
       console.log("DONE");
-      this.$emit("addCarparks", carparks);
+      this.$emit("addCarparks", {
+        carparkList: carparks,
+        Lat: lat,
+        Lng: lng,
+      });
     },
     SearchCarparks: function () {
       /*
@@ -175,6 +179,7 @@ export default {
         Number(address.split(",")[0]),
         Number(address.split(",")[1])
       );*/
+
       var geocoder = new google.maps.Geocoder();
       var address = document.getElementById("addressbox").value;
       const that = this;

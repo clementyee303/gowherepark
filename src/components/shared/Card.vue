@@ -1,5 +1,5 @@
 <template>
-  <form class="md:flex md:justify-center mb-6" >
+  <form @submit.prevent class="md:flex md:justify-center mb-6" >
   <div class="col-span-1 lg:col-span-6">
   <h4 class="text-3xl text-gray-700 mb-5">Payment information</h4>
   <div class="p-10 rounded-md shadow-md bg-white">
@@ -36,19 +36,31 @@
      :maxlength ="4"/>
     </div>
    </div>
-   
-   <div>
-    <button @click="finishPayment" class="w-full text-ceenter px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold">
-     Confirm Payment
-    </button>
+
+    <Modal v-show="showModal" @close-modal="showModal = false" />
+    <div class="save-btn">
+    <button class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold" @click="showModal = true; updateDB()">Confirm Payment</button>
+</div>
+
    </div>
   </div>
- </div>
  </form>
 </template>
+
 <script>
+import Modal from '@/components/shared/Modal.vue'
+import firebaseApp from '../../firebase.js';
+import { getFirestore } from 'firebase/firestore'
+import {setDoc, doc} from 'firebase/firestore';
+const db = getFirestore(firebaseApp);
+
 export default {
  name: "Payment",
+ components: {
+   Modal,
+ },
+props: ["Rates", "CarPlate", "CarPark" ,"StartTime", "EndTime"],
+
 data() {
     return {
       fields: {
@@ -56,8 +68,9 @@ data() {
         cardName: '',
         cardMonth: '',
         cardYear: '',
-        cardCvv: ''
+        cardCvv: '',
       },
+      showModal: false,
       minCardYear: new Date().getFullYear(),
 	}
  },
@@ -85,15 +98,34 @@ methods: {
     set2: function () {
         this.$set(this.Method, 2)
     },
-    set3: function () {
-        this.$set(this.Method, 3)
-    },
     generateMonthValue(n) {
       return n < 10 ? `0${n}` : n
     },
     updateValue(e) {
       this.cardNumber = e.target.value.replace(/ /g,'');
+    },
+    async updateDB() {
+      var a = this.Rates
+      var b = this.CarPlate
+      var c = this.CarPark
+      var d = this.StartTime
+      var e = this.EndTime 
+
+      try{
+      const docRef = await setDoc(doc(db, 'Luffy', 'Information'), {
+      Carplate: b,
+      Carpark: c,
+      EndTime: e,
+      Price: a,
+      Session: true,
+      StartTime: d
+      })
+      console.log(docRef)
+    }
+    catch(error) {
+      console.error("Error adding document: ", error);
+    }
     }
 }
-};
+}
 </script>

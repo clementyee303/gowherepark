@@ -1,6 +1,10 @@
 <script>
 import EnterParkingInfo from "@/components/shared/EnterParkingInfo.vue";
 import ExtendParking from "@/components/shared/ExtendParking.vue";
+import firebaseApp from '../firebase.js';
+import { getFirestore } from 'firebase/firestore'
+import {getDocs, collection} from 'firebase/firestore';
+const db = getFirestore(firebaseApp);
 
 export default {
 	name: 'Payment',
@@ -10,18 +14,32 @@ export default {
 	},
 data() {
     return {
-      Display: 1
+      Display: ""
 	}
-}
+},
 
-};
+beforeMount(){
+    this.getDisplay()
+},
+
+methods: {
+	async getDisplay(){
+		let z = await  getDocs(collection(db, "Luffy"))
+			z.forEach((docs) => {
+				let data =  docs.data()
+				this.Display = data.Session
+			})
+		return this.Display
+	},
+}
+}
 </script>
 
 <template>
-	<div v-if = "Display === 1">
+	<div v-if = "Display === false">
 		<EnterParkingInfo/>
 	</div>
-	<div v-else-if = "Display === 2">
+	<div v-else-if = "Display === true">
 		<ExtendParking/>
 	</div>
 </template>

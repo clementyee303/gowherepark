@@ -1,29 +1,36 @@
+/* eslint-disable vue/require-v-for-key */
+
 <template>
-		<form class="md:flex md:justify-center mb-6" >
+		<form @submit.prevent class="md:flex md:justify-center mb-6" >
 		<div class="col-span-1 lg:col-span-6">
 			<h4 class="text-3xl text-gray-700 mb-5">Select Session</h4>
 			<div class="p-10 rounded-md shadow-md bg-white">
 				<div class="mb-6">
 					<label class="block mb-3 text-gray-600" for="">Car Park</label>
-					<input type="text" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-wider"/>
+	
+					<select v-model="selectedValue" @change="onChange($event)" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest">
+					<option 
+					v-for="carPark in carParkArray" v-bind:key="carPark.Name" v-bind:value="carPark.Name">{{ carPark.Name }}
+					</option>
+					</select>
+				
 				</div>
 				<div class="mb-6">
 					<label class="block mb-3 text-gray-600" for="">Car Number</label>
-					<input
-					type="tel" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest"/>
+					<input type="text" v-model="CarNum" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest"/>
 				</div>
 				<div class="mb-6">
 					
 					<label class="block mb-3 text-gray-600" for="">Start Duration</label>
 					<div class="grid grid-cols-3 gap-1">
 						
-						<button @click = "decrease" class="text-xl text-center border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest mr-6">
+						<button @click = "decrease" class="text-xl text-center border border-gray-500 rounded-md inline-block py-1 px-1 w-full text-gray-600 tracking-widest mr-4">
 						-
 						</button>
 						<select class="text-center border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest mr-6">
-						<option>{{SessionTime}}</option>
+						<option>{{DisplayH}}HR {{DisplayM}}MIN</option>
 						</select>
-						<button @click = "increase" class="text-xl text-center border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest mr-6">
+						<button @click = "increase" class="text-xl text-center border border-gray-500 rounded-md inline-block py-1 px-1 w-full text-gray-600 tracking-widest mr-4">
 						+
 						</button>
 				
@@ -31,19 +38,25 @@
 			</div>
 			<div class="text-center ">
 				<span class="inline-block text-left  font-bold">
-					{{ total }}Current Carpark Rate: $xx
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Current Carpark Rate: {{Rates}}
 					<br><br>
-					{{ total }}Session Start Time: {{StartTime}}
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Session Start Time: {{StartTime}}
 					<br><br>
-					{{ total }}Session End Time: Date
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Session End Time:{{EndTime}}
 					<br><br>
 				</span>
 			</div>
 			<div>
-            <router-link
-			to="/Checkout"
-			button class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold"
-			>Proceed</router-link>
+            
+			<router-link :to="{ name: 'Checkout', params: { 
+				Rates: this.Rates,
+				CarPlate: this.CarNum,
+				CarPark:  this.selectedCarpark,
+				StartTime:  this.StartTime,
+				EndTime: this.EndTime,
+			}}" 
+			button @click = "getCarPlate" class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold">Proceed</router-link>
+
 			</div>
 		</div>
 	</div>
@@ -52,33 +65,113 @@
 
 
 <script>
+import firebaseApp from '../../firebase.js';
+import { getFirestore } from 'firebase/firestore'
+import { collection, getDocs} from 'firebase/firestore';
+const db = getFirestore(firebaseApp);
+
+
 export default {
  name: "EnterParking",
+
+
 data() {
     return {
-		SessionTime: 0,
-		StartTime: ""
+		Minute: 30,
+		DisplayH: "0",
+		DisplayM: "30",
+		StartTime: "",
+		Endtime: "",
+		Rates: 0,
+		selectedCarpark: "",
+		carplate: "",
+		carParkArray: []
 	}
  },
+
+beforeMount(){
+    this.getData()
+	this.getEndTime()
+ },
+
  created() {
 	setInterval(this.getNow, 1000);
  },
 methods: {
+	async getData(){
+		let z = await getDocs(collection(db, "Carpark"))
+		z.forEach((docs) => {
+			let data =   docs.data()
+			this.carParkArray.push({Name : data.Name, Price: data.Price})
+			})
+		return this.carParkArray
+	},
+
+	getCarPlate() {
+		this.carplate = this.CarNum
+		return this.carplate
+	},
+
+	getEndTime(){
+		const today = new Date();
+		today.setMinutes(today.getMinutes() + 30);
+		const date = +today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
+		const time = today.getHours() + ":" + today.getMinutes();
+		const dateTime = date +' '+ time;
+		this.EndTime = dateTime
+		return this.EndTime
+	},
+
 	decrease() {
-		if(this.SessionTime > 0)
-			return this.SessionTime--
+		if(this.Minute >= 60)
+			this.Minute -= 30
+			this.DisplayH = parseInt(this.Minute / 60) ;
+			this.DisplayM = parseInt(this.Minute % 60);
+			const today = new Date();
+			today.setMinutes(today.getMinutes() + this.Minute);
+			const date = +today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
+			const time = today.getHours() + ":" + today.getMinutes();
+			const dateTime = date +' '+ time;
+			this.EndTime = dateTime
+			if(this.DisplayM == 0)
+				this.DisplayM = "00"
+		this.Rates = (this.Rates/(this.Minute+30)  * (this.Minute)).toFixed(2)
+		return this.DisplayM, this.DisplayH, this.EndTime, this.Rates
 	},
 	increase() {
-		return this.SessionTime++
+		this.Minute += 30
+		this.DisplayH = parseInt(this.Minute / 60);
+		this.DisplayM = parseInt(this.Minute % 60);
+		if(this.DisplayM == 0)
+				this.DisplayM = "00"
+		const today = new Date();
+		today.setMinutes(today.getMinutes() + this.Minute);
+        const date = +today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
+        const time = today.getHours() + ":" + today.getMinutes();
+        const dateTime = date +' '+ time;
+		this.EndTime = dateTime
+		this.Rates = (this.Rates/(this.Minute-30)  * (this.Minute)).toFixed(2)
+		return this.DisplayM, this.DisplayH, this.EndTime, this.Rates
 	},
+	async onChange(event) {
+		let z = await getDocs(collection(db, "Carpark"))
+		z.forEach((docs) => {
+			let data =  docs.data()
+			if ( String(data.Name) === String(event.target.value)) {
+				this.Rates = (data.Price * (this.Minute/30)).toFixed(2)
+			} 
+			})
+		this.selectedCarpark = String(event.target.value)
+		return this.Rates, this.selectedCarpark
+	},
+
 	getNow: function() {
                     const today = new Date();
                     const date = +today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
                     const time = today.getHours() + ":" + today.getMinutes();
                     const dateTime = date +' '+ time;
                     this.StartTime = dateTime;
-                }
+                },	
 }
-
 };
 </script>
