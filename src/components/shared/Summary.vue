@@ -8,7 +8,7 @@
 				<br><br>
 				{{ total }} Payer ID: 1
 				<br><br>
-                {{ total }} Total Price: {{Rates}}
+                {{ total }} Total Price: ${{Rates}}
 			</span>
 		</div>
         </div>
