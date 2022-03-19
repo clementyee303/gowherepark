@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable vue/require-v-for-key */
 
 <template>
@@ -38,11 +39,11 @@
 			</div>
 			<div class="text-center ">
 				<span class="inline-block text-left  font-bold">
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Current Carpark Rate: {{Rates}}
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Current Carpark Rate: ${{Rates}}
 					<br><br>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Session Start Time: {{StartTime}}
 					<br><br>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Session End Time:{{EndTime}}
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Session End Time: {{EndTime}}
 					<br><br>
 				</span>
 			</div>
@@ -113,12 +114,7 @@ methods: {
 	},
 
 	getEndTime(){
-		const today = new Date();
-		today.setMinutes(today.getMinutes() + 30);
-		const date = +today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
-		const time = today.getHours() + ":" + today.getMinutes();
-		const dateTime = date +' '+ time;
-		this.EndTime = dateTime
+		this.EndTime = this.getDateFormat(30)
 		return this.EndTime
 	},
 
@@ -127,32 +123,41 @@ methods: {
 			this.Minute -= 30
 			this.DisplayH = parseInt(this.Minute / 60) ;
 			this.DisplayM = parseInt(this.Minute % 60);
-			const today = new Date();
-			today.setMinutes(today.getMinutes() + this.Minute);
-			const date = +today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
-			const time = today.getHours() + ":" + today.getMinutes();
-			const dateTime = date +' '+ time;
-			this.EndTime = dateTime
+			this.EndTime = this.getDateFormat(this.Minute)
 			if(this.DisplayM == 0)
 				this.DisplayM = "00"
 		this.Rates = (this.Rates/(this.Minute+30)  * (this.Minute)).toFixed(2)
 		return this.DisplayM, this.DisplayH, this.EndTime, this.Rates
 	},
+	getDateFormat(cal) {
+		const today = new Date();
+		today.setMinutes(today.getMinutes() + cal);
+        const date = +today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
+		var h = today.getHours()
+		var m = today.getMinutes()
+		if(h.toString().length == 1) {
+			h = '0'+h;
+		}
+		if(m.toString().length == 1) {
+			m = '0'+m;
+		}
+		const time = h + ":" + m;
+		const dateTime = date +' '+ time;
+        return dateTime;
+	},
+	
 	increase() {
 		this.Minute += 30
 		this.DisplayH = parseInt(this.Minute / 60);
 		this.DisplayM = parseInt(this.Minute % 60);
 		if(this.DisplayM == 0)
 				this.DisplayM = "00"
-		const today = new Date();
-		today.setMinutes(today.getMinutes() + this.Minute);
-        const date = +today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
-        const time = today.getHours() + ":" + today.getMinutes();
-        const dateTime = date +' '+ time;
-		this.EndTime = dateTime
+		
+		this.EndTime = this.getDateFormat(this.Minute)
 		this.Rates = (this.Rates/(this.Minute-30)  * (this.Minute)).toFixed(2)
 		return this.DisplayM, this.DisplayH, this.EndTime, this.Rates
 	},
+	
 	async onChange(event) {
 		let z = await getDocs(collection(db, "Carpark"))
 		z.forEach((docs) => {
@@ -168,8 +173,16 @@ methods: {
 	getNow: function() {
                     const today = new Date();
                     const date = +today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
-                    const time = today.getHours() + ":" + today.getMinutes();
-                    const dateTime = date +' '+ time;
+                    var h = today.getHours()
+					var m = today.getMinutes()
+					if(h.toString().length == 1) {
+						h = '0'+h;
+						}
+					if(m.toString().length == 1) {
+						m = '0'+m;
+						}
+					const time = h + ":" + m;
+					const dateTime = date +' '+ time;
                     this.StartTime = dateTime;
                 },	
 }

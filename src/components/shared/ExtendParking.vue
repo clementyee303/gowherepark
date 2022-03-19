@@ -15,7 +15,7 @@
 					<img class ="float-left w-5" src="@/assets/images/car-icon.png" /> &nbsp;
 					{{ total }} Carplate: {{this.CarPlateNum}}
 					<br><br>
-					{{ total }}Current Carpark Rate: {{this.Rates}}
+					{{ total }}Current Carpark Rate: ${{this.Rates}}
 					<br><br>
 					{{ total }}Session Start Time: {{this.StartDate}}
 					<br><br>
@@ -29,10 +29,12 @@
 				button @click="EndSession()" class="w-full text-center px-4 py-3 bg-red-500 rounded-md shadow-md text-white font-semibold">End Session</router-link>
 
 
-				<router-link
+			
+
+			<router-link
 			to="/Checkout"
 			button class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold"
-			>Proceed</router-link>
+			>Extend</router-link>
 		
 			</div>
 		</div>
@@ -41,6 +43,8 @@
 </template>
 
 <script>
+
+
 
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from 'firebase/firestore'
@@ -74,7 +78,14 @@ methods: {
 				this.CarPark = data.Carpark
 				this.StartDate = data.StartTime
 				this.EndDate = data.EndTime
-				this.TimeRemain = '1 HR 20 MIN'
+				const myArray  = ((data.EndTime.replaceAll("/", ':') + ":00").replace(/\s/g, ':')).split(":")
+				var milliseconds  = Math.abs(new Date(myArray[2], myArray[1], myArray[0], myArray[3], myArray[4], myArray[5], 0) - new Date())
+				//var seconds = parseInt((milliseconds / 1000) % 60 );
+				var minutes = parseInt(((milliseconds / (1000*60)) % 60));
+				var hours   = parseInt(((milliseconds / (1000*60*60)) % 24));
+
+
+				this.TimeRemain = hours + ' HR ' + minutes + ' MIN ';
 			})
 	},
 	async EndSession() {
