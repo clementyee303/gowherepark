@@ -74,7 +74,7 @@ input[type = text] {
   padding: 12px 20px;
 }
 
-/* #flex-layout {
+#flex-layout {
   margin-left: 20px;
   text-align: left;
 }
@@ -134,5 +134,5 @@ h3 {
   border-radius: 5px;
   margin-top: 5px;
   width: 100px;
-} */
+} 
 </style>

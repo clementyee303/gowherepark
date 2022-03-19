@@ -2,14 +2,27 @@
   <div class="topnav">
     <a class="active" href="#home">Past Parking Transactions</a>
     <select name="month" id="month">
-      <option value="January">January</option>
-      <option value="Feburary">Feburary</option>
-      <option value="March">March</option>
+      <option value="01">January</option>
+      <option value="02">February</option>
+      <option value="03">March</option>
+      <option value="04">April</option>
+      <option value="05">May</option>
+      <option value="06">June</option>
+      <option value="07">July</option>
+      <option value="08">August</option>
+      <option value="09">September</option>
+      <option value="10">October</option>
+      <option value="11">November</option>
+      <option value="12">December</option>
     </select>
     <select name="year" id="year">
-      <option value="2020">2020</option>
-      <option value="2021">2021</option>
       <option value="2022">2022</option>
+      <option value="2021">2021</option>
+      <option value="2020">2020</option>
+      <option value="2019">2019</option>
+      <option value="2018">2018</option>
+      <option value="2017">2017</option>
+      <option value="2016">2016</option>
     </select>
     <input type="text" placeholder="Search by Date/Location..">
   </div>
@@ -29,40 +42,50 @@
 
 <script>
 // To be linked to firestore
+import firebaseApp from '../../firebase.js';
+import { getFirestore } from 'firebase/firestore'
+import { collection, getDocs } from 'firebase/firestore';
+const db = getFirestore(firebaseApp);
+
 export default {
     mounted(){
-      function display() {
+      async function display() {
+        let Pptransact = await getDocs(collection(db, "Pptransact"));
         let serialNum = 1;
-        var table = document.getElementById("table");
-        var row = table.insertRow(serialNum);
 
-        var session = "250168 15 February 22 20:05:22";
-        var paid = "$6.30";
-        var location = "Adam Road (A0025)";
-        var type = "Visa";
-        var geoLat = "1.3070951997851268";
-        var geoLong = "103.78838833991956"
+        Pptransact.forEach((docs) => {
+          let yy = docs.data();
+          var table = document.getElementById("table");
+          var row = table.insertRow(serialNum);
+
+          var session = yy.Date;
+          var paid = yy.Paid;
+          var location = yy.Location;
+          var type = yy.Type;
+          var directions = yy.Directions;
 
 
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        var cell3 = row.insertCell(2);
-        var cell4 = row.insertCell(3);
-        var cell5 = row.insertCell(4);
+          var cell1 = row.insertCell(0);
+          var cell2 = row.insertCell(1);
+          var cell3 = row.insertCell(2);
+          var cell4 = row.insertCell(3);
+          var cell5 = row.insertCell(4);
 
-        cell1.innerHTML = session;
-        cell2.innerHTML = paid;
-        cell3.innerHTML = location;
-        cell4.innerHTML = type;
-        var navigationButton = document.createElement("button");
-        navigationButton.className = "navigationButton";
-        navigationButton.id = String("destination");
-        navigationButton.innerHTML = "navigate";
-        navigationButton.addEventListener('click', function(){
-            var url = "https://www.google.com/maps/dir/?api=1&destination=" + geoLat + "," + geoLong + "&travelmode=driving" 
-            window.open(url, "_blank");
-        })
+          cell1.innerHTML = session.toDate(); //.toDateString();
+          cell2.innerHTML = "$" + paid;
+          cell3.innerHTML = location;
+          cell4.innerHTML = type;
+          cell4.style.color = '#00FF00'
+          var navigationButton = document.createElement("button");
+          navigationButton.className = "navigationButton";
+          navigationButton.id = String("destination");
+          navigationButton.innerHTML = "navigate";
+          navigationButton.addEventListener('click', function(){
+              var url = "https://www.google.com/maps/dir/?api=1&destination=" + directions + "&travelmode=driving" 
+              window.open(url, "_blank");
+          })
         cell5.appendChild(navigationButton);
+        })
       }
       display();
     }
