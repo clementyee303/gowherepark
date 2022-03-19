@@ -1,12 +1,12 @@
 <script>
 import feather from 'feather-icons';
 import AppHeaderLinks from './AppHeaderLinks.vue';
-import Button from '../reusable/Button.vue';
+// import Button from '../reusable/Button.vue';
 
 export default {
 	components: {
 		AppHeaderLinks,
-		Button,
+		// Button,
 	},
 	data() {
 		return {
@@ -68,15 +68,15 @@ export default {
   </div>
   <!-- right header section -->
   <div class="flex items-center space-x-2">
-   <Button
+   <!-- <Button
 						title="Logout"
 						class="text-md font-general-medium bg-indigo-500 hover:bg-indigo-600 text-white shadow-sm rounded-md px-3 py-2.5 duration-300"
 						@click="$emit('logout-update', 1)"
 						aria-label="Log out"
-					/>
-	<!-- <button 
+					/> -->
+	<button 
 		class="text-md font-general-medium bg-indigo-500 hover:bg-indigo-600 text-white shadow-sm rounded-md px-3 py-2.5 duration-300"
-		@click="$emit('display-change', 2)"> Logout </button> -->
+		@click="$emit('logout-update', 2)"> Logout </button>
 
       
     

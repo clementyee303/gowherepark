@@ -10,10 +10,6 @@ const firebaseConfig = {
   measurementId: "G-VSPSKW0PDL"
   };
 
-
-
-  
-
 //Initialise Firebase
 firebase.initializeApp(firebaseConfig);
 

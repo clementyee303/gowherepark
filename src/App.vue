@@ -4,6 +4,8 @@ import AppHeaderLogin from './components/shared/AppHeaderLogin';
 import AppFooter from './components/shared/AppFooter';
 import AppHeaderGuest from './components/shared/AppHeaderGuest';
 // import Login from './views/Login';
+import firebaseApp from './firebase.js';
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
 export default {
 	components: {
@@ -15,12 +17,20 @@ export default {
 	data: () => {
 		return {
 			appTheme: localStorage.getItem('theme'),
-			display: 1,
+			display: 2,
 			dontshow: false,
 		};
 	},
 	mounted() {
 		feather.replace();
+		const auth = getAuth(firebaseApp);
+		onAuthStateChanged(auth, (user) => {
+			if (user) {
+				this.display = 1;
+			} else {
+				this.display = 2
+			}
+		})
 	},
 	updated() {
 		feather.replace();
@@ -29,14 +39,21 @@ export default {
 		goToLogin() {
 			this.$router.push('/Login');
 		},
-		loginSuccess() {
-			this.display = 2;
-			this.$router.push('/Home');
-		},
 		logoutSuccess() {
-			this.display = 2;
-			this.$router.push('/Home');
-		} 
+			console.log('test')
+			const auth = getAuth(firebaseApp);
+			const user = auth.currentUser;
+			signOut(auth, user)
+			this.$router.push('/Home')
+		}
+		// loginSuccess() {
+		// 	this.display = 2;
+		// 	this.$router.push('/Home');
+		// },
+		// logoutSuccess() {
+		// 	this.display = 2;
+		// 	this.$router.push('/Home');
+		// } 
 	}
 };
 </script>
