@@ -12,12 +12,9 @@
             <input type="text" id="email" required="" placeholder="Enter your email address"><br><br>
             <br>
             
-            <Button
-              title="Reset Password"
-              class="text-md font-general-medium bg-indigo-500 hover:bg-indigo-600 text-white shadow-sm rounded-md px-5 py-2.5 duration-300"
-              @click="placeholder()"
-              aria-label="Reset Password"
-            /><br><br><br>
+            <button class = "text-md font-general-medium bg-indigo-500 hover:bg-indigo-600 text-white shadow-sm rounded-md px-5 py-2.5 duration-300"
+             type="button" @click="resetAccount()">Reset Password</button>
+             <br><br><br>
             <h2>
               Return back to login page?
               <router-link to="/Login" button class="text-blue-600 hover:text-indigo-600 font-medium"> Log In</router-link>
@@ -27,17 +24,33 @@
 </template>
 
 <script>
-import Button from './reusable/Button.vue';
+import firebaseApp from '../firebase.js';
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 
 export default {
-  name: "LoginForm",
+  name: "ForgotPasswordForm",
   components: {
-    Button,
+
   },
   methods: {
     placeholder() {
       console.log("test");
-    }
+    },
+    async resetAccount() {
+    const auth = getAuth(firebaseApp);
+    const userEmail = document.getElementById("email").value;
+    console.log(userEmail);
+    await sendPasswordResetEmail(auth, userEmail)
+    .then(() => {
+      console.log();
+      alert("Email has been sent to reset your password")
+      this.$router.push('/Login');
+    })
+    .catch((error) => {
+      console.log(error.message);
+      alert(error.message);
+    })
+  }
   }
 };
 </script>
