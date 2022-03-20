@@ -2,14 +2,17 @@
   <div class="chart">
     <div class="header">
       <p style="font-size: x-large; text-align: left;">Monthly Expenditures</p>
-      <p id="totalAmt" style="font-size: small; text-align: left;"> 969 SGD (January 2021 - January 2022)</p>
-      <p style="font-size: x-small; color: #FF6161; text-align: left;">+xxx(y%)^past year</p>
+      <p id="totalAmt" style="font-size: small; text-align: left;"> {{total}} SGD ({{startDate}} - {{endDate}})</p>
+      <p style="font-size: x-small; color: #FF6161; text-align: left;">+{{increaseAmt}}({{increasePercent}}%)^past year</p>
     </div>
     <column-chart prefix="$" :data="barChartData" :legend="false" :colors="[['#482BE7']]"></column-chart>
   </div>
 </template>
 
 <script>
+let startDate = "January 2021";
+let endDate = "January 2022";
+let increaseAmt = Math.round(Math.random()*500);
 function sum( obj ) {
   var sum = 0;
   for( var el in obj ) {
@@ -25,16 +28,22 @@ var barChartData = {"january": Math.random()*500, "february": Math.random()*500,
         "july": Math.random()*500, "august": Math.random()*500, "september": Math.random()*500, 
         "october": Math.random()*500, "november": Math.random()*500, "december": Math.random()*500}
 
-const total = sum(barChartData)
+const total = Math.round(sum(barChartData))
 console.log("this is total: " + total)
+let increasePercent = Math.round(increaseAmt*100/ total);
 //document.getElementById("totalAmt").innerHTML = (String(total) + " SGD (January 2021 - January 2022)");
 
   export default {
     name:'MonthlyExpenditures',
-    props: ['total'],
+    props: [''],
     data () {
       return {
-        barChartData,
+        barChartData, 
+        total,
+        startDate,
+        endDate,
+        increaseAmt,
+        increasePercent
       }
     }
   }
@@ -47,7 +56,7 @@ console.log("this is total: " + total)
   }
 
   .header {
-    width: 60%;
+    width: 70%;
   }
   
 </style>
