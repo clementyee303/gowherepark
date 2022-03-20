@@ -52,6 +52,7 @@ import Modal from '@/components/shared/Modal.vue'
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from 'firebase/firestore'
 import {setDoc, doc} from 'firebase/firestore';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 const db = getFirestore(firebaseApp);
 
 export default {
@@ -72,8 +73,19 @@ data() {
       },
       showModal: false,
       minCardYear: new Date().getFullYear(),
+      displayName: ""
 	}
  },
+mounted() {
+		const auth = getAuth(firebaseApp);
+		onAuthStateChanged(auth, (user) => {
+			if (user) {
+				this.displayName = user.displayName;
+			} else {
+				this.displayName = "Guest"
+			}
+		})
+	},
 computed: {
   minCardMonth() {
     if (this.cardYear == this.minCardYear) return new Date().getMonth() +1
@@ -113,7 +125,7 @@ methods: {
       var f = this.RatesPerMin
 
       try{
-      const docRef = await setDoc(doc(db, 'Luffy', 'Information'), {
+      const docRef = await setDoc(doc(db, this.displayName, 'Information'), {
       Carplate: b,
       Carpark: c,
       EndTime: e,

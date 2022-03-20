@@ -1,18 +1,18 @@
 <template>
   <div class="modal-overlay" @click="$emit('close-modal')">
     <div class="modal" @click.stop>
-      <h1><strong>Payment Confirmation</strong></h1>
+      <h1 style="font-size:30px; color:rgb(59,130,246);"><strong>Payment Confirmation</strong></h1>
       <h2> Hi {{displayName}}, Thank you. </h2>
       <p><strong>Your Payment is Successful!</strong></p>
-      <p>A confirmation email has been sent to your email.</p>
+      <p>A confirmation email has been sent to {{email}}.</p>
       <u>Session Details</u><br><br>
       Session Number: xx<br>
       Payment Date: {{timestamp}}<br>
       Payment Type: Visa<br>
       Carpark: Carpark<br>
       Amount Paid: SGD$6.30 <br>  <br>
-      <router-link :to="{ name: 'Home'	}" 
-			button @click = "getCarPlate" class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold">Go Home</router-link>
+      <router-link :to="{ name: 'Payment'	}" 
+			button @click = "getCarPlate" class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold">OK</router-link>
 
 
     </div>
@@ -34,6 +34,7 @@ export default {
 		return {
 			displayName: "",
       timestamp: "",
+      email: ""
 		}
 	},
 	mounted() {
@@ -44,6 +45,7 @@ export default {
 			} else {
 				this.displayName = "Guest"
 			}
+      this.email = user.email
 		})
 	},
   methods: {
