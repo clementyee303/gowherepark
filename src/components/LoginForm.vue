@@ -51,6 +51,14 @@ export default {
       const auth = getAuth(firebaseApp);
       const userEmail = document.getElementById("email").value;
       const userPassword = document.getElementById("password").value;
+      if (userEmail == "") {
+        alert("Please enter your email");
+        return;
+      }
+      if (userPassword == "") {
+        alert("Please enter your password");
+        return;
+      }
       console.log(userEmail);
       await signInWithEmailAndPassword(auth, userEmail, userPassword)
       .then((user) => {

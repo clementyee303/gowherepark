@@ -70,6 +70,19 @@ export default {
       const auth = getAuth(firebaseApp);
       const userEmail = document.getElementById("email").value;
       const userPassword = document.getElementById("password").value;
+      const userName = document.getElementById("name").value;
+      if (userName == "") {
+        alert("Please enter your display name");
+        return;
+      }
+      if (userEmail == "") {
+        alert("Please enter an email");
+        return;
+      }
+      if (userPassword == "") {
+        alert("Please enter a password");
+        return;
+      }
       console.log(userEmail);
       await createUserWithEmailAndPassword(auth, userEmail, userPassword)
       .then((user) => {
