@@ -1,11 +1,11 @@
 <script>
 import feather from 'feather-icons';
-import AppHeaderLinks from './AppHeaderLinks.vue';
+import AppHeaderLinksGuest from './AppHeaderLinksGuest.vue';
 import Button from '../reusable/Button.vue';
 
 export default {
 	components: {
-		AppHeaderLinks,
+		AppHeaderLinksGuest,
 		Button,
 	},
 	data() {
@@ -64,7 +64,7 @@ export default {
   </div>
   <!-- left header section -->
   <div class="items-center hidden space-x-8 lg:flex">
-	<AppHeaderLinks :showModal="showModal" :isOpen="isOpen" />
+	<AppHeaderLinksGuest :showModal="showModal" :isOpen="isOpen" />
   </div>
   <!-- right header section -->
   <div class="flex items-center space-x-2">

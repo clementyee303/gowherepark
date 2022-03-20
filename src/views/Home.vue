@@ -17,7 +17,7 @@ export default {
 			if (user) {
 				this.displayName = user.displayName;
 			} else {
-				this.displayName = "test"
+				this.displayName = "Guest"
 			}
 		})
 	},
@@ -26,7 +26,7 @@ export default {
 
 <template>
 	<div class="container mx-auto">
-	<h1> Home Page Info {{displayName}}</h1>
+	<h1> Welcome to the Home Page {{displayName}}</h1>
 
 	</div>
 </template>
