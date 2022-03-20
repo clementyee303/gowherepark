@@ -14,8 +14,10 @@
             <input type="text" id="email" required="" placeholder="Enter your email address"><br><br>
 
             <label for="password">Password:</label>
-            <input type="text" id="password" required="" placeholder="Enter your pasword"><br><br>
-            <br>
+            <input type="password" id="password" required="" placeholder="Enter your pasword"><br>
+            <input type="checkbox" @click="showPassword()"><label id="checkbox" for="checkbox">Show Password</label>
+            <br><br>
+            <!-- <input type="checkbox" @click="myFunction()">Show Password  -->
             
             <button class = "text-md font-general-medium bg-indigo-500 hover:bg-indigo-600 text-white shadow-sm rounded-md px-5 py-2.5 duration-300"
              type="button" @click="createAccount()">Sign Up</button>
@@ -90,6 +92,14 @@ export default {
         alert(error.message);
       })
     },
+    showPassword() {
+      const x = document.getElementById("password");
+      if (x.type === "password") {
+        x.type = "text";
+      } else {
+        x.type = "password";
+      }
+    } 
     // nameAccount() {
     //   const auth = getAuth(firebaseApp);
     //   const userName = document.getElementById("name").value;
@@ -108,7 +118,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #formContainer {
   display: flex;
   margin-top: 0.6rem;
@@ -133,6 +143,29 @@ input[type = text] {
   width: 30%;
   height: 10%;
   padding: 12px 20px;
+}
+
+input[type = password] {
+  border: 2px solid lightslategrey;
+  border-radius: 4px;
+  width: 30%;
+  height: 10%;
+  padding: 12px 20px;
+}
+
+input[type = checkbox] {
+  width: 3%;
+  height: 3%;
+  margin-top:10px;
+  margin-left: 35px;
+  text-align: right;
+}
+
+#checkbox{
+    display:inline-block;
+    text-align:left;
+    width: 200px;
+    font-size:15px;
 }
 
 </style>
