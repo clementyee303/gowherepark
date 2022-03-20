@@ -31,7 +31,7 @@
 <script>
 // import firebase from '../uiFirebase.js';
 import firebaseApp from '../firebase.js';
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
 
 // const createAccount = async () => {
 //   const userEmail = email.value;
@@ -72,13 +72,38 @@ export default {
       await createUserWithEmailAndPassword(auth, userEmail, userPassword)
       .then((user) => {
         console.log(user);
-        this.$router.push('/Home');
-      })
+        const userName = document.getElementById("name").value;
+        updateProfile(auth.currentUser, {
+          displayName: userName
+        })
+        .then(() => {
+          this.$router.push('/Home');
+        })
+        .catch((error) => {
+          console.log(error.message);
+          alert(error.message);
+        })
+          // this.$router.push('/Home');
+        })
       .catch((error) => {
         console.log(error.message);
         alert(error.message);
       })
-    }
+    },
+    // nameAccount() {
+    //   const auth = getAuth(firebaseApp);
+    //   const userName = document.getElementById("name").value;
+    //   updateProfile(auth.currentUser, {
+    //     displayName: userName
+    //   })
+    //   .then(() => {
+    //     this.$router.push('/Home');
+    //   })
+    //   .catch((error) => {
+    //     console.log(error.message);
+    //     alert(error.message);
+    //   })
+    // },
   },
 };
 </script>
