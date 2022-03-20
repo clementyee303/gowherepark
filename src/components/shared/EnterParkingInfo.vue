@@ -22,7 +22,7 @@
 				</div>
 				<div class="mb-6">
 					
-					<label class="block mb-3 text-gray-600" for="">Start Duration</label>
+					<label class="block mb-3 text-gray-600" for="">Duration</label>
 					<div class="grid grid-cols-3 gap-1">
 						
 						<button @click = "decrease" class="text-xl text-center border border-gray-500 rounded-md inline-block py-1 px-1 w-full text-gray-600 tracking-widest mr-4">
@@ -51,6 +51,7 @@
             
 			<router-link :to="{ name: 'Checkout', params: { 
 				Rates: this.Rates,
+				RatesPerMin: (this.Rates/this.Minute)*30,
 				CarPlate: this.CarNum,
 				CarPark:  this.selectedCarpark,
 				StartTime:  this.StartTime,
@@ -119,14 +120,15 @@ methods: {
 	},
 
 	decrease() {
-		if(this.Minute >= 60)
+		if(this.Minute >= 60) {
 			this.Minute -= 30
 			this.DisplayH = parseInt(this.Minute / 60) ;
 			this.DisplayM = parseInt(this.Minute % 60);
 			this.EndTime = this.getDateFormat(this.Minute)
 			if(this.DisplayM == 0)
 				this.DisplayM = "00"
-		this.Rates = (this.Rates/(this.Minute+30)  * (this.Minute)).toFixed(2)
+			this.Rates = (this.Rates/(this.Minute+30)  * (this.Minute)).toFixed(2)
+		}
 		return this.DisplayM, this.DisplayH, this.EndTime, this.Rates
 	},
 	getDateFormat(cal) {

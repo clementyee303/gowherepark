@@ -10,32 +10,37 @@
 			<div class="text-center ">
 				<span class="inline-block text-left  font-bold">
 					<img class ="float-left w-5" src="@/assets/images/location_icon.png" /> &nbsp;
-					{{ total }} Carpark: {{this.CarPark}}
+					Carpark: {{this.CarPark}}
 					<br><br>
 					<img class ="float-left w-5" src="@/assets/images/car-icon.png" /> &nbsp;
-					{{ total }} Carplate: {{this.CarPlateNum}}
+					Carplate: {{this.CarPlateNum}}
 					<br><br>
-					{{ total }}Current Carpark Rate: ${{this.Rates}}
+					Current Carpark Rate: ${{this.Rates}}
 					<br><br>
-					{{ total }}Session Start Time: {{this.StartDate}}
+					Session Start Time: {{this.StartDate}}
 					<br><br>
-					{{ total }}Session End Time: {{this.EndDate}}
+					Session End Time: {{this.EndDate}}
 					<br><br>
 				</span>
 			</div>
 				<div class="grid grid-cols-2 gap-8">
 				
 				<router-link :to="{ name: 'Home', }" 
-				button @click="EndSession()" class="w-full text-center px-4 py-3 bg-red-500 rounded-md shadow-md text-white font-semibold">End Session</router-link>
+				button @click="EndSession()" class="w-full text-center px-4 py-3 bg-red-500 rounded-md shadow-md text-white font-semibold">
+				End Session</router-link>
+
+			<router-link :to="{ name: 'ExtendPayment', params: { 
+				Rate: this.Rates ,
+				Carplate: this.CarPlateNum,
+				Carpark:  this.CarPark,
+				StartTime:  this.StartDate,
+				EndTime: this.EndDate,
+				RatesPerMin: this.RatesPermin
+			}}" 
+			button  class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold">
+			Extend</router-link>
 
 
-			
-
-			<router-link
-			to="/Checkout"
-			button class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold"
-			>Extend</router-link>
-		
 			</div>
 		</div>
 	</div>
@@ -60,7 +65,8 @@ data() {
 		CarPark: "",
 		StartDate: "",
 		EndDate: "",
-		TimeRemain: ""
+		TimeRemain: "",
+		RatesPerMin: ""
 	}
 },
 
@@ -73,21 +79,26 @@ methods: {
 		let z = await  getDocs(collection(db, "Luffy"))
 			z.forEach((docs) => {
 				let data =  docs.data()
-				this.CarPlateNum = data.Carplate 
 				this.Rates = data.Price
+				this.CarPlateNum = data.Carplate 
+				this.RatesPermin = data.RatesPerMin
 				this.CarPark = data.Carpark
 				this.StartDate = data.StartTime
 				this.EndDate = data.EndTime
 				const myArray  = ((data.EndTime.replaceAll("/", ':') + ":00").replace(/\s/g, ':')).split(":")
 				var milliseconds  = Math.abs(new Date(myArray[2], myArray[1], myArray[0], myArray[3], myArray[4], myArray[5], 0) - new Date())
-				//var seconds = parseInt((milliseconds / 1000) % 60 );
-				var minutes = parseInt(((milliseconds / (1000*60)) % 60));
-				var hours   = parseInt(((milliseconds / (1000*60*60)) % 24));
-
-
+				console.log(milliseconds)
+				var minutes = "00"
+				var hours  = "00"
+				if (new Date(myArray[2], myArray[1], myArray[0], myArray[3], myArray[4], myArray[5], 0) > new Date()) {
+					minutes = parseInt(((milliseconds / (1000*60)) % 60));
+					hours   = parseInt(((milliseconds / (1000*60*60)) % 24));
+				}
 				this.TimeRemain = hours + ' HR ' + minutes + ' MIN ';
 			})
+
 	},
+
 	async EndSession() {
 	try {
 		const docRef = await setDoc(doc(db, 'Luffy', 'Information'), {

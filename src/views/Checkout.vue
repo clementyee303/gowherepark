@@ -10,7 +10,7 @@ import Summary from "@/components/shared/Summary.vue";
 export default {
 	name: 'Checkout',
 	
-	props: ["Rates", "CarPlate", "CarPark" ,"StartTime", "EndTime"],
+	props: ["Rates", "CarPlate", "CarPark" ,"StartTime", "EndTime", "RatesPerMin"],
 
 
 	components: {
@@ -42,6 +42,7 @@ export default {
 			
 		<component v-bind:is="component" 
 		:Rates="this.Rates" 
+		:RatesPerMin='this.RatesPerMin'
 		:CarPlate="this.CarPlate"
 		:CarPark="this.CarPark"
 		:StartTime="this.StartTime"
