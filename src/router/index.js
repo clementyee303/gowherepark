@@ -38,6 +38,16 @@ const routes = [
 		},
 	},
 	{
+		path: '/ExtendPayment',
+		name: 'ExtendPayment',
+		component: () =>
+			import('../views/ExtendPayment.vue'),
+		meta: {
+			title: 'ExtendPayment',
+		},
+		props: true
+	},
+	{
 		path: '/History',
 		name: 'History',
 		component: () =>

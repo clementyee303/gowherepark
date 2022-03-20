@@ -59,7 +59,7 @@ export default {
  components: {
    Modal,
  },
-props: ["Rates", "CarPlate", "CarPark" ,"StartTime", "EndTime"],
+props: ["Rates", "RatesPerMin", "CarPlate", "CarPark" ,"StartTime", "EndTime"],
 
 data() {
     return {
@@ -110,6 +110,7 @@ methods: {
       var c = this.CarPark
       var d = this.StartTime
       var e = this.EndTime 
+      var f = this.RatesPerMin
 
       try{
       const docRef = await setDoc(doc(db, 'Luffy', 'Information'), {
@@ -118,7 +119,8 @@ methods: {
       EndTime: e,
       Price: a,
       Session: true,
-      StartTime: d
+      StartTime: d,
+      RatesPerMin: f
       })
       console.log(docRef)
     }
