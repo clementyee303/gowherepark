@@ -1,7 +1,7 @@
 <template>
   <div class="topnav">
     <a class="active" href="#home">Past Parking Transactions</a>
-    <select name="month" id="month">
+    <select name="month" id="month" @change=filterMonth()>
       <option value="01">January</option>
       <option value="02">February</option>
       <option value="03">March</option>
@@ -24,7 +24,7 @@
       <option value="2017">2017</option>
       <option value="2016">2016</option>
     </select>
-    <input type="text" placeholder="Search by Date/Location..">
+    <input type="text" id="searchBar" placeholder="Search by Location.." v-on:keyup.enter=filterLocation()>
   </div>
 
   <div id = "display"> 
@@ -44,7 +44,7 @@
 // To be linked to firestore
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from 'firebase/firestore'
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs , query, where} from 'firebase/firestore';
 const db = getFirestore(firebaseApp);
 
 export default {
@@ -84,12 +84,66 @@ export default {
               var url = "https://www.google.com/maps/dir/?api=1&destination=" + directions + "&travelmode=driving" 
               window.open(url, "_blank");
           })
-        cell5.appendChild(navigationButton);
+          cell5.appendChild(navigationButton);
+          cell5.style.backgroundColor= '#b22222';
         })
       }
       display();
+    },
+    methods:{
+      filterMonth: async function(){
+        let selected = document.getElementById('month').value;
+        let Pptransact = await getDocs(collection(db, "Pptransact"));
+        Pptransact.forEach((docs) => {
+          let yy = docs.data();
+          // TO DO-----------
+          var month = yy.Date.toDate().toMonth();
+          console.log(month);
+          console.log(selected)
+        })
+      },
+      filterLocation: async function(){
+        var table = document.getElementById("table");
+        table.innerHTML = "";
+        let serialNum = 0;
+        let searchText = document.getElementById('searchBar').value;
+        const Pptransact = collection(db, "Ppatransact");
+        const q = query(Pptransact, where("Location", "==", searchText));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          console.log(doc.id, " => ", doc.data());
+          var row = table.insertRow(serialNum);
+
+          var session = doc.data().Date.toDate();
+          var paid = doc.data().Paid;
+          var location = doc.data().Location;
+          var type = doc.data().Type;
+          var directions = doc.data().Directions;
+
+          var cell1 = row.insertCell(0);
+          var cell2 = row.insertCell(1);
+          var cell3 = row.insertCell(2);
+          var cell4 = row.insertCell(3);
+          var cell5 = row.insertCell(4);
+
+          cell1.innerHTML = session; //.toDateString();
+          cell2.innerHTML = "$" + paid;
+          cell3.innerHTML = location;
+          cell4.innerHTML = type;
+          cell4.style.color = '#00FF00'
+          var navigationButton = document.createElement("button");
+          navigationButton.className = "navigationButton";
+          navigationButton.id = String("destination");
+          navigationButton.innerHTML = "navigate";
+          navigationButton.addEventListener('click', function(){
+              var url = "https://www.google.com/maps/dir/?api=1&destination=" + directions + "&travelmode=driving" 
+              window.open(url, "_blank");
+          })
+        cell5.appendChild(navigationButton);
+        });   
+      }
     }
-    
   }
 </script>
 
@@ -166,4 +220,18 @@ tr:hover {
     background-color: darkred;
     color: white;
 }
+
+#destination {
+  /* remove default behavior */
+  appearance: none;
+  -webkit-appearance: none;
+  /* usual styles */
+  border: none;
+  background-color: #b22222;
+  color: #fff;
+  border-radius: 5px;
+  margin-top: 5px;
+  width: 100px;
+}
+
 </style>
