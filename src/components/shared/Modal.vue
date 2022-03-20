@@ -1,11 +1,18 @@
 <template>
   <div class="modal-overlay" @click="$emit('close-modal')">
     <div class="modal" @click.stop>
-      <h1>Payment Confirmation</h1>
+      <h1 style="font-size:30px; color:rgb(59,130,246);"><strong>Payment Confirmation</strong></h1>
+      <h2> Hi {{displayName}}, Thank you. </h2>
       <p><strong>Your Payment is Successful!</strong></p>
-      <p>A confirmation email has been sent to your email.</p>
-      <router-link :to="{ name: 'Home'	}" 
-			button @click = "getCarPlate" class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold">Go Home</router-link>
+      <p>A confirmation email has been sent to {{email}}.</p>
+      <u>Session Details</u><br><br>
+      Session Number: xx<br>
+      Payment Date: {{timestamp}}<br>
+      Payment Type: Visa<br>
+      Carpark: Carpark<br>
+      Amount Paid: SGD$6.30 <br>  <br>
+      <router-link :to="{ name: 'Payment'	}" 
+			button @click = "getCarPlate" class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold">OK</router-link>
 
 
     </div>
@@ -15,10 +22,44 @@
   </div>
 </template>
 
-
 <script>
-  export default {
-}
+import firebaseApp from '../../firebase.js';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+export default {
+	name: 'Home',
+	components: {
+	},
+	data() { 
+		return {
+			displayName: "",
+      timestamp: "",
+      email: ""
+		}
+	},
+	mounted() {
+		const auth = getAuth(firebaseApp);
+		onAuthStateChanged(auth, (user) => {
+			if (user) {
+				this.displayName = user.displayName;
+			} else {
+				this.displayName = "Guest"
+			}
+      this.email = user.email
+		})
+	},
+  methods: {
+    getNow: function() {
+      const today = new Date();
+      const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+      const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+      const dateTime = date +' '+ time;
+      this.timestamp = dateTime;
+      }
+      
+    }
+  }
+
 </script>
 
 <style scoped>
