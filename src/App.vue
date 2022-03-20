@@ -31,6 +31,7 @@ export default {
 				this.display = 2
 			}
 		})
+		this.$router.push('/Home')
 	},
 	updated() {
 		feather.replace();

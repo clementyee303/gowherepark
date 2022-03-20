@@ -53,7 +53,7 @@ export default {
 	
 	<nav class="container flex justify-around py-8 mx-auto bg-white">
   <div class="flex items-center">
-    <div> <router-link to="/"
+    <div> <router-link to="/Home"
 						><img
 							src="@/assets/images/logo-light.png"
 							class="w-36"
