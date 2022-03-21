@@ -55,6 +55,7 @@ import firebaseApp from '../../firebase.js';
 import { getFirestore } from 'firebase/firestore'
 import {setDoc, doc, getDocs, collection} from 'firebase/firestore';
 const db = getFirestore(firebaseApp);
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default {
 name: 'ExtendParking',
@@ -66,17 +67,30 @@ data() {
 		StartDate: "",
 		EndDate: "",
 		TimeRemain: "",
-		RatesPerMin: ""
+		RatesPerMin: "",
+		displayName: ""
 	}
 },
 
-beforeMount(){
-    this.getDisplay()
-},
+//beforeMount(){
+//    this.getDisplay()
+//},
+
+mounted() {
+		const auth = getAuth(firebaseApp);
+		onAuthStateChanged(auth, (user) => {
+			if (user) {
+				this.displayName = user.displayName;
+				this.getDisplay(this.displayName)
+			} else {
+				this.displayName = "Guest"
+			}
+		})
+	},
 
 methods: {
-	async getDisplay(){
-		let z = await  getDocs(collection(db, "Luffy"))
+	async getDisplay(u){
+		let z = await  getDocs(collection(db, u))
 			z.forEach((docs) => {
 				let data =  docs.data()
 				this.Rates = data.Price
@@ -86,11 +100,11 @@ methods: {
 				this.StartDate = data.StartTime
 				this.EndDate = data.EndTime
 				const myArray  = ((data.EndTime.replaceAll("/", ':') + ":00").replace(/\s/g, ':')).split(":")
-				var milliseconds  = Math.abs(new Date(myArray[2], myArray[1], myArray[0], myArray[3], myArray[4], myArray[5], 0) - new Date())
+				var milliseconds  = Math.abs(new Date(myArray[2], myArray[1]-1, myArray[0], myArray[3], myArray[4], myArray[5], 0) - new Date())
 				console.log(milliseconds)
 				var minutes = "00"
 				var hours  = "00"
-				if (new Date(myArray[2], myArray[1], myArray[0], myArray[3], myArray[4], myArray[5], 0) > new Date()) {
+				if (new Date(myArray[2], myArray[1]-1, myArray[0], myArray[3], myArray[4], myArray[5], 0) > new Date()) {
 					minutes = parseInt(((milliseconds / (1000*60)) % 60));
 					hours   = parseInt(((milliseconds / (1000*60*60)) % 24));
 				}
@@ -101,7 +115,7 @@ methods: {
 
 	async EndSession() {
 	try {
-		const docRef = await setDoc(doc(db, 'Luffy', 'Information'), {
+		const docRef = await setDoc(doc(db, this.displayName, 'Information'), {
 			Session: false,
 			})
 			console.log(docRef)

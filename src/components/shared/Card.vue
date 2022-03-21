@@ -39,7 +39,7 @@
 
     <Modal v-show="showModal" @close-modal="showModal = false" />
     <div class="save-btn">
-    <button class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold" @click="showModal = true; updateDB()">Confirm Payment</button>
+    <button class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold" @click="showModal = true; updateDB(); updateDB2()">Confirm Payment</button>
 </div>
 
    </div>
@@ -60,7 +60,7 @@ export default {
  components: {
    Modal,
  },
-props: ["Rates", "RatesPerMin", "CarPlate", "CarPark" ,"StartTime", "EndTime"],
+props: ["Rates", "RatesPerMin", "CarPlate", "CarPark" ,"StartTime", "EndTime", "Session_Number"],
 
 data() {
     return {
@@ -70,6 +70,7 @@ data() {
         cardMonth: '',
         cardYear: '',
         cardCvv: '',
+        displayName: ""
       },
       showModal: false,
       minCardYear: new Date().getFullYear(),
@@ -116,6 +117,25 @@ methods: {
     updateValue(e) {
       this.cardNumber = e.target.value.replace(/ /g,'');
     },
+  async updateDB2() {
+      var a = this.Rates
+      var b = this.CarPlate
+      var c = this.CarPark
+      var d = this.StartTime
+      var e = this.EndTime 
+      var g = this.Session_Number
+
+      const docRef2 = await setDoc(doc(db, (String(this.displayName)+"_"), String(g)), {
+      Carplate: b,
+      Carpark: c,
+      EndTime: e,
+      Paid: a,
+      StartTime: d,
+      Type: "Visa"
+      })
+      console.log(docRef2)
+    },
+
     async updateDB() {
       var a = this.Rates
       var b = this.CarPlate

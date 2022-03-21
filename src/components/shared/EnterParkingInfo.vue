@@ -87,7 +87,7 @@ data() {
 		Rates: 0,
 		selectedCarpark: "",
 		carplate: "",
-		carParkArray: []
+		carParkArray: [],
 	}
  },
 

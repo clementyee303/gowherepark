@@ -2,9 +2,12 @@
 import EnterParkingInfo from "@/components/shared/EnterParkingInfo.vue";
 import ExtendParking from "@/components/shared/ExtendParking.vue";
 import firebaseApp from '../firebase.js';
-import { getFirestore } from 'firebase/firestore'
+import {  getFirestore } from 'firebase/firestore'
 import {getDocs, collection} from 'firebase/firestore';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 const db = getFirestore(firebaseApp);
+const auth = getAuth(firebaseApp);
+		
 
 export default {
 	name: 'Payment',
@@ -14,22 +17,33 @@ export default {
 	},
 data() {
     return {
-      Display: ""
+    Display: false,
+	displayName: ""
 	}
 },
 
-beforeMount(){
-    this.getDisplay()
+mounted(){
+		onAuthStateChanged(auth, (user) => {
+			if (user) {
+				this.displayName = user.displayName;
+				this.getDisplay(this.displayName)
+			} else {
+				this.displayName = "Guest"
+			}
+		})
 },
 
+
+
+
+
 methods: {
-	async getDisplay(){
-		let z = await  getDocs(collection(db, "Luffy"))
-			z.forEach((docs) => {
-				let data =  docs.data()
-				this.Display = data.Session
+	async getDisplay(u){
+		let z = await getDocs(collection(db, u))
+		z.forEach((docs) => {
+			let d =  docs.data()
+			this.Display = d.Session
 			})
-		return this.Display
 	},
 }
 }
