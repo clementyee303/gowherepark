@@ -6,11 +6,11 @@
       <p><strong>Your Payment is Successful!</strong></p>
       <p>A confirmation email has been sent to {{email}}.</p>
       <u>Session Details</u><br><br>
-      Session Number: xx<br>
+      Session Number: {{Session_Number}}<br>
       Payment Date: {{timestamp}}<br>
-      Payment Type: Visa<br>
-      Carpark: Carpark<br>
-      Amount Paid: SGD$6.30 <br>  <br>
+      Payment Type: Credit Card<br>
+      Carpark: {{CarPark}}<br>
+      Amount Paid: SGD{{Rates}} <br>  <br>
       <router-link :to="{ name: 'Payment'	}" 
 			button @click = "getCarPlate" class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold">OK</router-link>
 
@@ -27,14 +27,15 @@ import firebaseApp from '../../firebase.js';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default {
-	name: 'Home',
+	name: 'Modal',
+  props: ['Session_Number','CarPark','Rates'],
 	components: {
 	},
 	data() { 
 		return {
-			displayName: "",
-      timestamp: "",
-      email: ""
+		displayName: "",
+    timestamp: "",
+    email: "",
 		}
 	},
 	mounted() {
@@ -55,9 +56,10 @@ export default {
       const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
       const dateTime = date +' '+ time;
       this.timestamp = dateTime;
-      }
       
-    }
+      },
+
+  }
   }
 
 </script>

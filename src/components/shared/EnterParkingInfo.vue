@@ -186,7 +186,8 @@ methods: {
 					const time = h + ":" + m;
 					const dateTime = date +' '+ time;
                     this.StartTime = dateTime;
-                },	
+                },
+
 }
 };
 </script>

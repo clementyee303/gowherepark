@@ -9,10 +9,10 @@
    </div>
    <div class="mb-6">
     <label class="block mb-3 text-gray-600" for="">Card Number</label>
-    <input
-     type="tel" :id="fields.cardNumber" 
+    <input v-model="cardNumber" @keypress="isNumber($event); formatCard()" 
+     :type="tel" :id="fields.cardNumber"
      class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest"
-     :maxlength="19" pattern="\d*" :value ="formatCardNumber" @input="updateValue"/>
+     :maxlength="19" >
    </div>
    <div class="mb-6 flex flex-wrap -mx-3w-full">
     <div class="w-2/3 px-3">
@@ -56,7 +56,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 const db = getFirestore(firebaseApp);
 
 export default {
- name: "Payment",
+ name: "Card",
  components: {
    Modal,
  },
@@ -74,7 +74,8 @@ data() {
       },
       showModal: false,
       minCardYear: new Date().getFullYear(),
-      displayName: ""
+      displayName: "",
+      cardNumber: ""
 	}
  },
 mounted() {
@@ -92,9 +93,6 @@ computed: {
     if (this.cardYear == this.minCardYear) return new Date().getMonth() +1
     return 1
   },
-  formatCardNumber(){
-    return this.cardNumber ? this.cardNumber.match(/.{1,4}/g).join(' ') : '';
-  }
  },
  watch: {
    cardYear() {
@@ -105,17 +103,22 @@ computed: {
  },
 
 methods: {
-  set1: function () {
-        this.$set(this.Method, 1)
-    },
-    set2: function () {
-        this.$set(this.Method, 2)
-    },
+  formatCard() {
+    let nn = this.cardNumber;
+    (nn.length - (nn.split(" ").length - 1)) % 4 === 0 ? this.cardNumber += ' ' : ''
+  },
     generateMonthValue(n) {
       return n < 10 ? `0${n}` : n
     },
-    updateValue(e) {
-      this.cardNumber = e.target.value.replace(/ /g,'');
+    isNumber(evt) {
+      const charCode = evt.which ? evt.which : evt.keyCode;
+      if (
+        charCode > 31 &&
+        (charCode < 48 || charCode > 57) &&
+        charCode !==46
+      ) {
+        evt.preventDefault();
+      }
     },
   async updateDB2() {
       var a = this.Rates
@@ -159,7 +162,7 @@ methods: {
     catch(error) {
       console.error("Error adding document: ", error);
     }
-    }
+    } 
 }
 }
 </script>
