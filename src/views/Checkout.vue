@@ -33,6 +33,7 @@ export default {
 		onAuthStateChanged(auth, (user) => {
 			if (user) {
 				this.displayName = user.displayName;
+				this.getData(this.displayName)
 			} else {
 				this.displayName = "Guest"
 			}
@@ -40,13 +41,12 @@ export default {
 		this.getData(db)
 	},
 methods: {
-	async getData(db){
-		const collect = collection(db, String(String(this.displayName)+'_'))
+	async getData(display){
+		const name = String(display) + '_'
+		const collect = collection(db, String(name))
 		const Snapshot = await getDocs(collect)
-		console.log(Snapshot.docs.map(doc => doc.data() ))
-		console.log(Snapshot.docs.map(doc => doc.data() ).size)
-		console.log(Snapshot.size)
-		this.size = Snapshot.size + 1
+		const userList = Snapshot.docs.map(doc => doc.data() );
+		this.size = userList.length + 1
 
 		return this.carParkArray, this.size
 	},
