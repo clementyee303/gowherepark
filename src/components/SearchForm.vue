@@ -69,14 +69,30 @@
 <script>
 /* eslint-disable no-undef */
 import axios from "axios";
+import firebaseApp from "../firebase.js";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
+const db = getFirestore(firebaseApp);
 
 export default {
   name: "SearchForm",
+  data() {
+    return {
+      user: false,
+    };
+  },
   mounted() {
     new google.maps.places.Autocomplete(document.getElementById("addressbox"), {
       bounds: new google.maps.LatLngBounds(
         new google.maps.LatLng(1.29027, 103.851959)
       ),
+    });
+    const auth = getAuth(firebaseApp);
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.user = user;
+      }
     });
   },
   methods: {
@@ -138,7 +154,7 @@ export default {
       for (let i = 0; i < urls.length; i++) {
         let received = await axios.get(urls[i], config);
         let array = received.data.value;
-        array.forEach((item) => {
+        for (const item of array) {
           let carparkLat = Number(item.Location.split(" ")[0]);
           let carparkLng = Number(item.Location.split(" ")[1]);
           if (this.GetDist(carparkLat, carparkLng, lat, lng) < 0.7) {
@@ -160,10 +176,21 @@ export default {
             carpark["isGantry"] = false;
             carpark["lat"] = carparkLat;
             carpark["lng"] = carparkLng;
+            carpark["id"] = item.CarParkID;
+            if (this.user) {
+              let bookmarked = await this.IsBookMarked(item.CarParkID);
+              if (bookmarked == true) {
+                carpark["isFavColor"] = "red";
+              } else {
+                carpark["isFavColor"] = "black";
+              }
+            } else {
+              carpark["isFavColor"] = "black";
+            }
             carparks.push(carpark);
             carpark = {};
           }
-        });
+        }
       }
       console.log("DONE");
       this.$emit("addCarparks", {
@@ -171,6 +198,20 @@ export default {
         Lat: lat,
         Lng: lng,
       });
+    },
+    IsBookMarked: async function (id) {
+      const docRef = doc(
+        db,
+        "Bookmarks",
+        String(this.user.uid),
+        "CarParks",
+        id
+      );
+      let docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return true;
+      }
+      return false;
     },
     SearchCarparks: function () {
       /*

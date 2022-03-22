@@ -128,9 +128,10 @@ export default {
             :priceHr="carpark.priceHr"
             :textColor="carpark.textColor"
             :isGantry="carpark.isGantry"
-            :isFav="carpark.isFav"
+            :isFavColor="carpark.isFavColor"
             :lat="carpark.lat"
             :lng="carpark.lng"
+            :id="carpark.id"
           ></Carpark>
         </li>
       </ul>
