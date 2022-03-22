@@ -25,11 +25,11 @@
       </button>
     </div>
     <div id="flex-layout2">
-      <button id="bookmark" type="button">
+      <button id="bookmark" type="button" @click="getFav">
         <span id="bookmark-label">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
             <path
-              v-bind:style="{ fill: isFav }"
+              v-bind:style="{ fill: localIsFavColor }"
               d="M0 190.9V185.1C0 115.2 50.52 55.58 119.4 44.1C164.1 36.51 211.4 51.37 244 84.02L256 96L267.1 84.02C300.6 51.37 347 36.51 392.6 44.1C461.5 55.58 512 115.2 512 185.1V190.9C512 232.4 494.8 272.1 464.4 300.4L283.7 469.1C276.2 476.1 266.3 480 256 480C245.7 480 235.8 476.1 228.3 469.1L47.59 300.4C17.23 272.1 .0003 232.4 .0003 190.9L0 190.9z"
             />
           </svg>
@@ -40,8 +40,20 @@
 </template>
 
 <script>
+import firebaseApp from "../firebase.js";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { doc, setDoc, deleteDoc, getDoc } from "firebase/firestore";
+const db = getFirestore(firebaseApp);
+
 export default {
   name: "Carpark",
+  data() {
+    return {
+      user: false,
+      localIsFavColor: this.isFavColor,
+    };
+  },
   props: {
     name: String,
     distance: Number,
@@ -52,15 +64,65 @@ export default {
     priceHr: Number,
     textColor: { default: "black", type: String },
     isGantry: Boolean,
-    isFav: { default: "black", type: String },
+    isFavColor: String,
     directions: String,
     lat: Number,
     lng: Number,
+    id: String,
+  },
+  mounted() {
+    const auth = getAuth(firebaseApp);
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.user = user;
+      }
+    });
   },
   methods: {
     getDirections: function () {
       let url = `https://www.google.com/maps/dir/?api=1&destination=${this.lat},${this.lng}&travelmode=driving`;
       window.open(url, "_blank");
+    },
+    getFav: async function () {
+      if (this.user == false) {
+        alert("Please login to bookmark carpark");
+      } else {
+        let bookmarked = await this.IsBookMarked(this.id);
+        if (bookmarked) {
+          await deleteDoc(
+            doc(db, "Bookmarks", String(this.user.uid), "CarParks", this.id)
+          );
+          this.localIsFavColor = "black";
+          alert("Bookmark deleted");
+        } else {
+          const docRef = doc(
+            db,
+            "Bookmarks",
+            String(this.user.uid),
+            "CarParks",
+            this.id
+          );
+          await setDoc(docRef, {
+            CarParkID: this.id,
+          });
+          this.localIsFavColor = "red";
+          alert("Bookmark added");
+        }
+      }
+    },
+    IsBookMarked: async function (id) {
+      const docRef = doc(
+        db,
+        "Bookmarks",
+        String(this.user.uid),
+        "CarParks",
+        id
+      );
+      let docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return true;
+      }
+      return false;
     },
   },
 };
