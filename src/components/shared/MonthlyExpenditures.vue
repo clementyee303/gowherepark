@@ -1,4 +1,7 @@
 <template>
+<!-- 
+  TO BE DELETED, merged with pptransaction for ease of filtering.
+-->
   <div class="chart">
     <div class="header">
       <p style="font-size: x-large; text-align: left;">Monthly Expenditures</p>
@@ -22,11 +25,11 @@ function sum( obj ) {
 }
 
 // Will eventually draw data from firestore
-var barChartData = {"january": Math.random()*500, "february": Math.random()*500, 
-        "march": Math.random()*500, 
-        "april": Math.random()*500, "may": Math.random()*500, "june": Math.random()*500, 
-        "july": Math.random()*500, "august": Math.random()*500, "september": Math.random()*500, 
-        "october": Math.random()*500, "november": Math.random()*500, "december": Math.random()*500}
+var barChartData = {"january": Math.random()*500, "february": Math.random()*500}
+        // "march": Math.random()*500, 
+        // "april": Math.random()*500, "may": Math.random()*500, "june": Math.random()*500, 
+        // "july": Math.random()*500, "august": Math.random()*500, "september": Math.random()*500, 
+        // "october": Math.random()*500, "november": Math.random()*500, "december": Math.random()*500}
 
 const total = Math.round(sum(barChartData))
 console.log("this is total: " + total)

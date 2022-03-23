@@ -1,6 +1,18 @@
 <template>
+<div class="monthlyExpenditures">
+  <div class="chart">
+    <div class="header">
+      <p style="font-size: x-large; text-align: left;">Monthly Expenditures</p>
+      <p id="totalAmt" style="font-size: small; text-align: left;"> {{total}} SGD ({{startDate}} - {{endDate}})</p>
+      <p style="font-size: x-small; color: #FF6161; text-align: left;">+{{increaseAmt}}({{increasePercent}}%)^past year</p>
+    </div>
+    <column-chart prefix="$" :data="barChartData" :legend="false" :colors="[['#482BE7']]"></column-chart>
+  </div> 
+</div>
+
+<div class="ppTransactions">
   <div class="topnav">
-    <a class="active" href="#home">Past Parking Transactions</a>
+    <h1><b>Past Parking Transactions</b></h1>
     <select name="month" id="month" @change=filterMonth()>
       <option value="01">January</option>
       <option value="02">February</option>
@@ -26,37 +38,120 @@
     </select>
     <input type="text" id="searchBar" placeholder="Search by Location.." v-on:keyup.enter=filterLocation()>
   </div>
-
+  
   <div id = "display"> 
       <table id = "table" class = "auto-index">
-          <tr>
+          <thead>
             <th>Session ID/ Date</th>
             <th>Amount Paid</th>
             <th>Carpark Location</th>
             <th>Payment Type</th>
             <th>Direction</th>
-          </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
       </table><br><br>
   </div>
+</div>
 </template>
 
 <script>
-// To be linked to firestore
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from 'firebase/firestore'
 import { collection, getDocs , query, where} from 'firebase/firestore';
 const db = getFirestore(firebaseApp);
 
-export default {
-    mounted(){
-      async function display() {
-        let Pptransact = await getDocs(collection(db, "Pptransact"));
-        let serialNum = 1;
+// Chart Display
+let startDate = "February 2022";
+let endDate = "March 2022";
+let increaseAmt = Math.round(Math.random()*500);
+function sum( obj ) {
+  var sum = 0;
+  for( var el in obj ) {
+      sum += parseFloat( obj[el] );
+  }
+  return sum;
+}
 
-        Pptransact.forEach((docs) => {
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// Drawing data from firebase
+let drawnData = [];
+
+db.collection("preferences").get().then(querySnapshot => {
+    console.log(`Found ${querySnapshot.size} documents.`);
+    querySnapshot.forEach(doc => {
+        // doc.data() is never undefined for query doc snapshots
+        const engineerDetails = doc.data();
+        drawnData.push(engineerDetails);
+    });
+
+    // Here the engineers array is fully populated
+    console.log(drawnData.length);
+    res.json(drawnData);
+});
+
+// Grouping by month
+// eslint-disable-next-line no-unused-vars
+var drawnData2 = {"22/02/2022": Math.random()*500, "23/02/2022": Math.random()*500,"26/03/2022": Math.random()*500}
+  ,groupKey = 0;
+      groups = myArray.reduce(function (r, o) {
+          var m = o.date.split(('-'))[1];
+          (r[m])? r[m].data.push(o) : r[m] = {group: String(groupKey++), data: [o]};
+          return r;
+      }, {});
+
+  var result = Object.keys(groups).map(function(k){ return groups[k]; });
+
+  console.log(result);
+*/
+
+// Will eventually draw data from firestore
+var barChartData = {"22/02/2022": Math.random()*500, "26/03/2022": Math.random()*500}
+        // "march": Math.random()*500, 
+        // "april": Math.random()*500, "may": Math.random()*500, "june": Math.random()*500, 
+        // "july": Math.random()*500, "august": Math.random()*500, "september": Math.random()*500, 
+        // "october": Math.random()*500, "november": Math.random()*500, "december": Math.random()*500}
+
+const total = Math.round(sum(barChartData))
+console.log("this is total: " + total)
+let increasePercent = Math.round(increaseAmt*100/ total);
+//document.getElementById("totalAmt").innerHTML = (String(total) + " SGD (January 2021 - January 2022)");
+
+
+export default {
+    data() {
+      return {
+        dataArray: [], // data to be displayed
+        barChartData, 
+        total,
+        startDate,
+        endDate,
+        increaseAmt,
+        increasePercent
+      }
+    },
+
+    methods: {
+      display: function(snapshot) {
+        // function to display the table 
+        
+        //snapshot is my data
+
+        // Clear table rows
+        var tableBody = document.getElementById("tableBody");
+        tableBody.innerHTML = "";
+        
+        // Get table ref
+        var table = document.getElementById("table");
+
+        let serialNum = 0;
+
+        // Loop through my data
+        snapshot.forEach((docs) => {
+           
+          // 1. Create table row from data 
           let yy = docs.data();
-          var table = document.getElementById("table");
           var row = table.insertRow(serialNum);
+          row.style.backgroundColor = "pink";
 
           var session = yy.Date;
           var paid = yy.Paid;
@@ -75,7 +170,8 @@ export default {
           cell2.innerHTML = "$" + paid;
           cell3.innerHTML = location;
           cell4.innerHTML = type;
-          cell4.style.color = '#00FF00'
+          cell4.style.color = '#00FF00';
+          cell4.style.border = 'thin solid #999';
           var navigationButton = document.createElement("button");
           navigationButton.className = "navigationButton";
           navigationButton.id = String("destination");
@@ -86,77 +182,85 @@ export default {
           })
           cell5.appendChild(navigationButton);
           cell5.style.backgroundColor= '#b22222';
+
+          serialNum++;
+
+          // 2. Aggregate my data for chart
+          
         })
-      }
-      display();
-    },
-    methods:{
+      },
+      initLoad: async function () {
+        // Initial loading upon page open
+        let Pptransact = await getDocs(collection(db, "Pptransact"));
+        this.display(Pptransact);
+      },
       filterMonth: async function(){
         let selected = document.getElementById('month').value;
         let Pptransact = await getDocs(collection(db, "Pptransact"));
         Pptransact.forEach((docs) => {
           let yy = docs.data();
           // TO DO-----------
-          var month = yy.Date.toDate().toMonth();
-          console.log(month);
+          var month = yy.Date;
+          console.log(yy.Date);
+          console.log(month)
           console.log(selected)
         })
       },
       filterLocation: async function(){
-        var table = document.getElementById("table");
-        table.innerHTML = "";
-        let serialNum = 0;
+        // Get searchbar value 
         let searchText = document.getElementById('searchBar').value;
-        const Pptransact = collection(db, "Ppatransact");
+        console.log(searchText);
+        // Get query
+        const Pptransact = collection(db, "Pptransact");  
         const q = query(Pptransact, where("Location", "==", searchText));
         const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-          // doc.data() is never undefined for query doc snapshots
-          console.log(doc.id, " => ", doc.data());
-          var row = table.insertRow(serialNum);
-
-          var session = doc.data().Date.toDate();
-          var paid = doc.data().Paid;
-          var location = doc.data().Location;
-          var type = doc.data().Type;
-          var directions = doc.data().Directions;
-
-          var cell1 = row.insertCell(0);
-          var cell2 = row.insertCell(1);
-          var cell3 = row.insertCell(2);
-          var cell4 = row.insertCell(3);
-          var cell5 = row.insertCell(4);
-
-          cell1.innerHTML = session; //.toDateString();
-          cell2.innerHTML = "$" + paid;
-          cell3.innerHTML = location;
-          cell4.innerHTML = type;
-          cell4.style.color = '#00FF00'
-          var navigationButton = document.createElement("button");
-          navigationButton.className = "navigationButton";
-          navigationButton.id = String("destination");
-          navigationButton.innerHTML = "navigate";
-          navigationButton.addEventListener('click', function(){
-              var url = "https://www.google.com/maps/dir/?api=1&destination=" + directions + "&travelmode=driving" 
-              window.open(url, "_blank");
-          })
-        cell5.appendChild(navigationButton);
-        });   
+        this.display(querySnapshot);
       }
-    }
+    },
+    mounted(){
+      this.initLoad();
+    },
   }
 </script>
 
 
 <style scoped>
-/* Add a black background color to the top navigation bar */
-.topnav, select{
-  overflow: hidden;
-  background-color: #e9e9e9;
+.chart {
+  margin: auto;
+  background-color: #FAFAFA;
 }
 
-/* Style the links inside the navigation bar */
-.topnav a, select {
+.header {
+  width: 70%;
+}
+  
+#month {
+  overflow: hidden;
+  background-color: #e9e9e9;
+  margin-left: 20%;
+  width: 12%;
+}
+
+#year {
+  overflow: hidden;
+  background-color: #e9e9e9;
+  margin-left: 1%;
+  width: 12%;
+}
+
+select{
+  float: left;
+  display: block;
+  color: black;
+  text-align: center;
+  margin: 14px 16px;
+  padding: 3px 0 3px 0;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+/* Style the box inside the navigation bar */
+.topnav h1{
   float: left;
   display: block;
   color: black;
@@ -168,6 +272,7 @@ export default {
 
 /* Style the search box inside the navigation bar */
 .topnav input[type=text] {
+  background-color: #F8F8F8;
   float: right;
   padding: 6px;
   border: none;
@@ -176,62 +281,34 @@ export default {
   font-size: 17px;
 }
 
-/* When the screen is less than 600px wide, stack the links and the search field vertically instead of horizontally */
-@media screen and (max-width: 600px) {
-  .topnav a, .topnav input[type=text] {
-    float: none;
-    display: block;
-    text-align: left;
-    width: 100%;
-    margin: 0;
-    padding: 14px;
-  }
-  .topnav input[type=text] {
-    border: 1px solid #ccc;
-  }
-}
-
 #table{
     border-collapse: collapse;
     width: 100%;
 }
 
-td, th {
+th, td {
   border: 1px solid #999;
   padding: 0.5rem;
   text-align: center;
 }
 
 th{
-  font-size: 20px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+  font-size: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
-tr:nth-child(even){
-    background-color: pink;
+.monthlyExpenditures{
+	margin: auto;
+	width: 50%;
+	height: 10%;
+	border: 1px solid grey;
 }
 
-tr:hover {
-	background: #777;
+.ppTransactions{
+	margin: auto;
+	width: 80%;
+	border: 1px solid grey;
+	margin-top: 2%;	
 }
-
-.navigationButton{
-    background-color: darkred;
-    color: white;
-}
-
-#destination {
-  /* remove default behavior */
-  appearance: none;
-  -webkit-appearance: none;
-  /* usual styles */
-  border: none;
-  background-color: #b22222;
-  color: #fff;
-  border-radius: 5px;
-  margin-top: 5px;
-  width: 100px;
-}
-
 </style>
