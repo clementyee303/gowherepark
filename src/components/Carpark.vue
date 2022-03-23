@@ -2,9 +2,9 @@
   <div id="carparkContainer">
     <div id="flex-layout">
       <h3 id="capark-name">{{ name }}</h3>
-      <h5 id="carpark-distance">Distance: {{ distance }}km</h5>
+      <h5 id="carpark-distance">{{ distance }}</h5>
       <h5 id="carpark-lots" v-bind:style="{ color: textColor }">
-        {{ numLots }} Lots Available
+        {{ numLots }}
       </h5>
       <h5 id="carpark-type">{{ carparkType }} Carpark</h5>
       <button type="button" onclick="" id="availability">
@@ -56,8 +56,8 @@ export default {
   },
   props: {
     name: String,
-    distance: Number,
-    numLots: Number,
+    distance: String,
+    numLots: String,
     carparkType: String,
     marginTop: String,
     priceEntry: Number,
@@ -65,7 +65,6 @@ export default {
     textColor: { default: "black", type: String },
     isGantry: Boolean,
     isFavColor: String,
-    directions: String,
     lat: Number,
     lng: Number,
     id: String,
@@ -104,11 +103,22 @@ export default {
           );
           await setDoc(docRef, {
             CarParkID: this.id,
+            name: this.name,
+            carparkType: this.carparkType,
+            marginTop: this.marginTop,
+            priceEntry: this.priceEntry,
+            priceHr: this.priceHr,
+            textColor: this.textColor,
+            isGantry: this.isGantry,
+            isFavColor: "red",
+            lat: this.lat,
+            lng: this.lng,
           });
           this.localIsFavColor = "red";
           alert("Bookmark added");
         }
       }
+      this.$emit("refreshBookmarks");
     },
     IsBookMarked: async function (id) {
       const docRef = doc(

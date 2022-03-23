@@ -159,12 +159,8 @@ export default {
           let carparkLng = Number(item.Location.split(" ")[1]);
           if (this.GetDist(carparkLat, carparkLng, lat, lng) < 0.7) {
             carpark["name"] = item.Development;
-            carpark["distance"] = this.GetDist(
-              carparkLat,
-              carparkLng,
-              lat,
-              lng
-            );
+            let distanceAway = this.GetDist(carparkLat, carparkLng, lat, lng);
+            carpark["distance"] = distanceAway;
             carpark["numLots"] = item.AvailableLots;
             carpark["carparkType"] = "Gantry";
             carpark["marginTop"] = "58px";
@@ -194,6 +190,11 @@ export default {
       }
       console.log("DONE");
       this.$emit("addCarparks", {
+        carparkList: carparks,
+        Lat: lat,
+        Lng: lng,
+      });
+      this.$emit("redirectTo", {
         carparkList: carparks,
         Lat: lat,
         Lng: lng,
