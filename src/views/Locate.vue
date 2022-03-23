@@ -21,8 +21,26 @@ export default {
   mounted() {
     this.LoadMap();
     window.getDirections = this.getDirections;
+    //console.log(JSON.parse(this.$route.params.CarParks));
+    if (this.$route.params.from == 1) {
+      this.LoadCarparks(
+        JSON.parse(this.$route.params.CarParks),
+        this.$route.params.lat,
+        this.$route.params.lng
+      );
+    }
   },
   methods: {
+    LoadCarparks: function (CarParks, lat, lng) {
+      //console.log(CarParks);
+      document.getElementById("sortoptions").value = "distance";
+      this.CarParks = CarParks;
+      this.lat = lat;
+      this.lng = lng;
+      this.CarParks.sort(this.GetSortOrder("distance"));
+      this.AddLocationsToGoogleMaps(this.lat, this.lng);
+      console.log("COMPLETED");
+    },
     addCarparks: function (val) {
       document.getElementById("sortoptions").value = "distance";
       this.CarParks = val.carparkList;
@@ -120,8 +138,8 @@ export default {
         <li v-for="carpark in CarParks" :key="carpark.id">
           <Carpark
             :name="carpark.name"
-            :distance="carpark.distance"
-            :numLots="carpark.numLots"
+            :distance="'Distance: ' + carpark.distance + 'km'"
+            :numLots="carpark.numLots + ' Lots Available'"
             :carparkType="carpark.carparkType"
             :marginTop="carpark.marginTop"
             :priceEntry="carpark.priceEntry"

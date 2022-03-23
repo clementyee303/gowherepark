@@ -1,17 +1,101 @@
 <script>
+import firebaseApp from "../firebase.js";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
+import Carpark from "@/components/Carpark.vue";
+const db = getFirestore(firebaseApp);
 
 export default {
-	name: 'Bookmark',
-	components: {
-	},
+  name: "Bookmark",
+  components: {
+    Carpark,
+  },
+  mounted() {
+    const auth = getAuth(firebaseApp);
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.user = user;
+        this.LoadTable();
+      }
+    });
+  },
+  data() {
+    return {
+      CarParks: [],
+    };
+  },
+  methods: {
+    LoadTable: async function () {
+      let dbCollection = await getDocs(
+        collection(db, "Bookmarks", String(this.user.uid), "CarParks")
+      );
+      let carpark = {};
+      dbCollection.forEach((docs) => {
+        let doc = docs.data();
+        carpark["name"] = doc.name;
+        carpark["carparkType"] = doc.carparkType;
+        carpark["marginTop"] = "15px";
+        carpark["priceEntry"] = doc.priceEntry;
+        carpark["priceHr"] = doc.priceHr;
+        carpark["isGantry"] = doc.isGantry;
+        carpark["lat"] = doc.lat;
+        carpark["lng"] = doc.lng;
+        carpark["id"] = doc.CarParkID;
+        carpark["isFavColor"] = doc.isFavColor;
+        this.CarParks.push(carpark);
+        carpark = {};
+      });
+    },
+    refreshBookmarks: function () {
+      this.CarParks = [];
+      this.LoadTable();
+    },
+  },
 };
 </script>
 
 <template>
-	<div class="container mx-auto">
-	<h1> Bookmark </h1>
-
-	</div>
+  <div id="scrollable">
+    <ul>
+      <li v-for="carpark in CarParks" :key="carpark.id">
+        <Carpark
+          :name="carpark.name"
+          :distance="carpark.distance"
+          :numLots="carpark.numLots"
+          :carparkType="carpark.carparkType"
+          :marginTop="carpark.marginTop"
+          :priceEntry="carpark.priceEntry"
+          :priceHr="carpark.priceHr"
+          :textColor="carpark.textColor"
+          :isGantry="carpark.isGantry"
+          :isFavColor="carpark.isFavColor"
+          :lat="carpark.lat"
+          :lng="carpark.lng"
+          :id="carpark.id"
+          @refreshBookmarks="refreshBookmarks"
+        ></Carpark>
+      </li>
+    </ul>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+ul {
+  list-style-type: none;
+  overflow-y: scroll;
+  height: 350px;
+  width: 100%;
+  text-align: center;
+  display: inline-block;
+}
+#scrollable {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+</style>
