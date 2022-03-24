@@ -6,7 +6,7 @@
       <p id="totalAmt" style="font-size: small; text-align: left;"> {{total}} SGD ({{startDate}} - {{endDate}})</p>
       <p style="font-size: x-small; color: #FF6161; text-align: left;">+{{increaseAmt}}({{increasePercent}}%)^past year</p>
     </div>
-    <column-chart prefix="$" :data="this.barChartData" :colors="[['#482BE7']]"></column-chart>
+    <column-chart prefix="$" :data="barChartData" :colors="[['#482BE7']]"></column-chart>
   </div> 
 </div>
 
@@ -241,12 +241,16 @@ export default {
       filterLocation: async function(){
         // Get searchbar value 
         let searchText = document.getElementById('searchBar').value;
-        console.log(searchText);
-        // Get query
-        const Pptransact = collection(db, this.displayName);  
-        const q = query(Pptransact, where("Carpark", "==", searchText));
-        const querySnapshot = await getDocs(q);
-        this.display(querySnapshot);
+        if(searchText == ""){
+          this.initLoad(this.displayName)
+        } else {
+          console.log(searchText);
+          // Get query
+          const Pptransact = collection(db, this.displayName);  
+          const q = query(Pptransact, where("Carpark", "==", searchText));
+          const querySnapshot = await getDocs(q);
+          this.display(querySnapshot);
+        }
       }
     },
     // beforeMount(){
@@ -263,7 +267,7 @@ export default {
           console.log(this.dataArray) // Check data
           // 0: {Carpark: '11A BOON TIONG ROAD', EndTime: '24/3/2022 22:06', Paid: '2.80', Type: 'Visa'}
           // 1: {Carpark: '121 CANBERRA ST', EndTime: '25/3/2022 22:06', Paid: '3.5', Type: 'Visa'}
-          console.log(Object.assign({}, this.chartData.datasets))
+          //console.log(Object.assign({}, this.chartData.datasets))
         }
       })
     },
