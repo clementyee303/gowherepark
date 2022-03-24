@@ -1,16 +1,15 @@
 <template>
-  <form @submit.prevent class="md:flex md:justify-center mb-6" >
+  <form method="post" @submit.prevent class="md:flex md:justify-center mb-6" >
   <div class="col-span-1 lg:col-span-6">
   <h4 class="text-3xl text-gray-700 mb-5">Payment information</h4>
   <div class="p-10 rounded-md shadow-md bg-white">
    <div class="mb-6">
     <label class="block mb-3 text-gray-600" for="">Name on Card</label>
-    <input type="text" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-wider"/>
+    <input id="name" type="text" required class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-wider"/>
    </div>
    <div class="mb-6">
     <label class="block mb-3 text-gray-600" for="">Card Number</label>
-    <input v-model="cardNumber" @keypress="isNumber($event); formatCard()" 
-     :type="tel" :id="fields.cardNumber"
+    <input id="number" v-model="cardNumber" required type="text" pattern="[0-9 ]+" @keypress="isNumber($event); formatCard()" 
      class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest"
      :maxlength="19" >
    </div>
@@ -18,12 +17,12 @@
     <div class="w-2/3 px-3">
      <label class="block mb-3 text-gray-600" for="">Expiration date</label>
      <div class="flex">
-      <select class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest mr-6">
+      <select id="month" name="month" required class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest mr-6">
        <option disabled selected>Month</option>
        <option v-bind:value="n < 10 ? '0' + n : n" v-for="n in 12" v-bind:disabled="n < minCardMonth" v-bind:key="n">
       {{generateMonthValue(n)}} </option>
       </select>
-      <select class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest">
+      <select id="year" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest">
        <option diabled selected>Year</option>
        <option v-bind:value="$index + minCardYear" v-for="(n,$index) in 12" v-bind:key="n">
       {{$index + minCardYear}}</option>
@@ -32,14 +31,15 @@
     </div>
     <div class="w-1/3 px-3">
      <label class="block mb-3 text-gray-600" for="">CVC</label>
-     <input type="tel" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest" 
+     <input id ="cvc" type="number" required class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest" 
      :maxlength ="4"/>
     </div>
    </div>
+   <span id="error"></span>
 
     <Modal v-show="showModal" @close-modal="showModal = false" />
     <div class="save-btn">
-    <button class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold" @click="showModal = true; updateDB(); updateDB2()">Confirm Payment</button>
+    <button type="submit" class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold" @click="validate()">Confirm Payment</button>
 </div>
 
    </div>
@@ -103,6 +103,27 @@ computed: {
  },
 
 methods: {
+  validate() {
+    var error = document.getElementById("error")
+    if (document.getElementById("name").value=="") {
+      error.textContent = "Please enter a valid name"
+      error.style.color = "red"
+    } else if (document.getElementById("number").value=="") {
+      error.textContent = "Please enter a valid card number"
+      error.style.color = "red"
+    } else if (document.getElementById("cvc").value=="") {
+      error.textContent = "Please enter a valid cvc"
+      error.style.color = "red"
+    } else if (document.getElementById("month").value=="Month" || document.getElementById("year").value=="Year") {
+      error.textContent = "Please select a valid expiration date"
+      error.style.color = "red"
+    } else {
+      error.textContent = ""
+      this.showModal = true; 
+      this.updateDB(); 
+      this.updateDB2()
+    }
+  },
   formatCard() {
     let nn = this.cardNumber;
     (nn.length - (nn.split(" ").length - 1)) % 4 === 0 ? this.cardNumber += ' ' : ''

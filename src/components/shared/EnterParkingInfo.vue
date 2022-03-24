@@ -3,13 +3,15 @@
 
 <template>
 		<form @submit.prevent class="md:flex md:justify-center mb-6" >
+		
 		<div class="col-span-1 lg:col-span-6">
 			<h4 class="text-3xl text-gray-700 mb-5">Select Session</h4>
 			<div class="p-10 rounded-md shadow-md bg-white">
+				<span id="error"></span><br><br>
 				<div class="mb-6">
 					<label class="block mb-3 text-gray-600" for="">Car Park</label>
 	
-					<select v-model="selectedValue" @change="onChange($event)" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest">
+					<select id="carpark" v-model="selectedValue" @change="onChange($event)" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest">
 					<option 
 					v-for="carPark in carParkArray" v-bind:key="carPark.Name" v-bind:value="carPark.Name">{{ carPark.Name }}
 					</option>
@@ -18,7 +20,7 @@
 				</div>
 				<div class="mb-6">
 					<label class="block mb-3 text-gray-600" for="">Car Number</label>
-					<input type="text" v-model="CarNum" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest"/>
+					<input id="number" required type="text" v-model="CarNum" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest"/>
 				</div>
 				<div class="mb-6">
 					
@@ -49,15 +51,8 @@
 			</div>
 			<div>
             
-			<router-link :to="{ name: 'Checkout', params: { 
-				Rates: this.Rates,
-				RatesPerMin: (this.Rates/this.Minute)*30,
-				CarPlate: this.CarNum,
-				CarPark:  this.selectedCarpark,
-				StartTime:  this.StartTime,
-				EndTime: this.EndTime,
-			}}" 
-			button @click = "getCarPlate" class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold">Proceed</router-link>
+
+			<button @click = "getCarPlate; validate()" class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold">Proceed</button>
 
 			</div>
 		</div>
@@ -112,6 +107,28 @@ methods: {
 	getCarPlate() {
 		this.carplate = this.CarNum
 		return this.carplate
+	},
+
+	validate() {
+	var error = document.getElementById("error")
+    if (document.getElementById("carpark").value=="") {
+		error.textContent = "Please select a carpark"
+		error.style.color = "red"
+    } else if (document.getElementById("number").value=="") {
+		error.textContent = "Please enter a valid car number"
+		error.style.color = "red"
+	} else if (document.getElementById("number").value.length <6) {
+		error.textContent = "Car number must at least be six digits"
+		error.style.color = "red"
+	} else {
+	this.$router.push({name: 'Checkout', params: {
+				Rates: this.Rates,
+				RatesPerMin: (this.Rates/this.Minute)*30,
+				CarPlate: this.CarNum,
+				CarPark:  this.selectedCarpark,
+				StartTime:  this.StartTime,
+				EndTime: this.EndTime}})
+	}
 	},
 
 	getEndTime(){
