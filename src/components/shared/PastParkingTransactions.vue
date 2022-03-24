@@ -6,7 +6,7 @@
       <p id="totalAmt" style="font-size: small; text-align: left;"> {{total}} SGD ({{startDate}} - {{endDate}})</p>
       <p style="font-size: x-small; color: #FF6161; text-align: left;">+{{increaseAmt}}({{increasePercent}}%)^past year</p>
     </div>
-    <column-chart prefix="$" :data="barChartData" :legend="false" :colors="[['#482BE7']]"></column-chart>
+    <column-chart prefix="$" :data="this.barChartData" :colors="[['#482BE7']]"></column-chart>
   </div> 
 </div>
 
@@ -50,6 +50,11 @@
           </thead>
           <tbody id="tableBody"></tbody>
       </table><br><br>
+      
+      <!--
+      <h1> {{this.dataArray}} </h1>
+      <h1> {{this.barChartData}} </h1>
+      -->
   </div>
 </div>
 </template>
@@ -59,18 +64,13 @@ import firebaseApp from '../../firebase.js';
 import { getFirestore } from 'firebase/firestore'
 import { collection, getDocs , query, where} from 'firebase/firestore';
 const db = getFirestore(firebaseApp);
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 // Chart Display
 let startDate = "February 2022";
 let endDate = "March 2022";
 let increaseAmt = Math.round(Math.random()*500);
-function sum( obj ) {
-  var sum = 0;
-  for( var el in obj ) {
-      sum += parseFloat( obj[el] );
-  }
-  return sum;
-}
+
 
 /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // Drawing data from firebase
@@ -105,32 +105,61 @@ var drawnData2 = {"22/02/2022": Math.random()*500, "23/02/2022": Math.random()*5
 */
 
 // Will eventually draw data from firestore
-var barChartData = {"22/02/2022": Math.random()*500, "26/03/2022": Math.random()*500}
+var cc = {"22/02/2022": Math.random()*500, "26/03/2022": Math.random()*500}
         // "march": Math.random()*500, 
         // "april": Math.random()*500, "may": Math.random()*500, "june": Math.random()*500, 
         // "july": Math.random()*500, "august": Math.random()*500, "september": Math.random()*500, 
         // "october": Math.random()*500, "november": Math.random()*500, "december": Math.random()*500}
 
-const total = Math.round(sum(barChartData))
-console.log("this is total: " + total)
-let increasePercent = Math.round(increaseAmt*100/ total);
+//const total = Math.round(sum(barChartData))
+//const total = 11;
+//console.log("this is total: " + total)
+//let increasePercent = Math.round(increaseAmt*100/ total);
 //document.getElementById("totalAmt").innerHTML = (String(total) + " SGD (January 2021 - January 2022)");
-
 
 export default {
     data() {
       return {
         dataArray: [], // data to be displayed
-        barChartData, 
-        total,
+        barChartData: {},
+        //total,
+        cc,
         startDate,
         endDate,
         increaseAmt,
-        increasePercent
+        //increasePercent
       }
     },
 
+    // computed: {
+    //   chartData() {
+    //     return {
+    //       datasets: this.barChartData
+    //     }
+    //   }
+    // },
+
     methods: {
+      getData: async function(u){
+        let z = await getDocs(collection(db, u))
+        z.forEach((docs) => {
+          let data = docs.data()
+          this.dataArray.push({Carpark : data.Carpark, EndTime: data.EndTime, Paid: data.Paid, Type: data.Type})
+          this.barChartData[data.EndTime] = parseFloat(data.Paid)
+          })
+      },
+
+      // sum: function (obj){
+      //   var sum = 0;
+      //   for(var el in obj) {
+      //       sum += parseFloat(obj[el]);
+      //   }
+      //   return sum;
+      // },
+
+      getTotal: function (){},
+
+
       display: function(snapshot) {
         // function to display the table 
         
@@ -151,14 +180,12 @@ export default {
           // 1. Create table row from data 
           let yy = docs.data();
           var row = table.insertRow(serialNum);
-          row.style.backgroundColor = "pink";
+          //row.style.backgroundColor = "pink";
 
-          var session = yy.Date;
+          var session = yy.EndTime;
           var paid = yy.Paid;
-          var location = yy.Location;
+          var carpark = yy.Carpark;
           var type = yy.Type;
-          var directions = yy.Directions;
-
 
           var cell1 = row.insertCell(0);
           var cell2 = row.insertCell(1);
@@ -166,9 +193,12 @@ export default {
           var cell4 = row.insertCell(3);
           var cell5 = row.insertCell(4);
 
-          cell1.innerHTML = session.toDate(); //.toDateString();
+          cell1.innerHTML = session // Date is in string -  23/3/2022 15:47
+          cell1.style.border = 'thin solid #999';
           cell2.innerHTML = "$" + paid;
-          cell3.innerHTML = location;
+          cell2.style.border = 'thin solid #999';
+          cell3.innerHTML = carpark;
+          cell3.style.border = 'thin solid #999';
           cell4.innerHTML = type;
           cell4.style.color = '#00FF00';
           cell4.style.border = 'thin solid #999';
@@ -177,11 +207,12 @@ export default {
           navigationButton.id = String("destination");
           navigationButton.innerHTML = "navigate";
           navigationButton.addEventListener('click', function(){
-              var url = "https://www.google.com/maps/dir/?api=1&destination=" + directions + "&travelmode=driving" 
+              var url = "https://www.google.com/maps/dir/?api=1&destination=" + carpark + "&travelmode=driving" 
               window.open(url, "_blank");
           })
           cell5.appendChild(navigationButton);
-          cell5.style.backgroundColor= '#b22222';
+          cell5.style.backgroundColor= '#6366f1';
+          //cell5.style.borderRadius = "5";
 
           serialNum++;
 
@@ -189,14 +220,15 @@ export default {
           
         })
       },
-      initLoad: async function () {
+      initLoad: async function (u) {
         // Initial loading upon page open
-        let Pptransact = await getDocs(collection(db, "Pptransact"));
+        let Pptransact = await getDocs(collection(db, u));
         this.display(Pptransact);
       },
+      
       filterMonth: async function(){
         let selected = document.getElementById('month').value;
-        let Pptransact = await getDocs(collection(db, "Pptransact"));
+        let Pptransact = await getDocs(collection(db, this.displayName));
         Pptransact.forEach((docs) => {
           let yy = docs.data();
           // TO DO-----------
@@ -211,14 +243,29 @@ export default {
         let searchText = document.getElementById('searchBar').value;
         console.log(searchText);
         // Get query
-        const Pptransact = collection(db, "Pptransact");  
-        const q = query(Pptransact, where("Location", "==", searchText));
+        const Pptransact = collection(db, this.displayName);  
+        const q = query(Pptransact, where("Carpark", "==", searchText));
         const querySnapshot = await getDocs(q);
         this.display(querySnapshot);
       }
     },
+    // beforeMount(){
+    //   this.getData(this.user.displayName)
+    // },
     mounted(){
-      this.initLoad();
+      const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          this.displayName = user.displayName + "_";
+          this.initLoad(this.displayName);
+          this.getData(this.displayName);
+         
+          console.log(this.dataArray) // Check data
+          // 0: {Carpark: '11A BOON TIONG ROAD', EndTime: '24/3/2022 22:06', Paid: '2.80', Type: 'Visa'}
+          // 1: {Carpark: '121 CANBERRA ST', EndTime: '25/3/2022 22:06', Paid: '3.5', Type: 'Visa'}
+          console.log(Object.assign({}, this.chartData.datasets))
+        }
+      })
     },
   }
 </script>
