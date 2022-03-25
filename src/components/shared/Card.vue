@@ -37,7 +37,8 @@
    </div>
    <span id="error"></span>
 
-    <Modal v-show="showModal" @close-modal="showModal = false" />
+
+    <Modal :Rates="this.Rates" :Session_Number="this.Session_Number" :CarPark="this.CarPark" :Type="this.Pay"  v-show="showModal" @close-modal="showModal = false" />
     <div class="save-btn">
     <button type="submit" class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold" @click="validate()">Confirm Payment</button>
 </div>
@@ -75,7 +76,8 @@ data() {
       showModal: false,
       minCardYear: new Date().getFullYear(),
       displayName: "",
-      cardNumber: ""
+      cardNumber: "",
+      Pay :"Visa",
 	}
  },
 mounted() {
@@ -148,8 +150,16 @@ methods: {
       var d = this.StartTime
       var e = this.EndTime 
       var g = this.Session_Number
+      const myArray  = ((e.replaceAll("/", ':') + ":00").replace(/\s/g, ':')).split(":")
+      var x = myArray[1]
+      if (String(x).length == 1) {
+        x = "0" + String(x)
+      }
+      var y = myArray[2]
 
-      const docRef2 = await setDoc(doc(db, (String(this.displayName)+"_"), String(g)), {
+      const timestamp = (new Date()).getTime()
+
+      const docRef2 = await setDoc(doc(db, "Transactions",String(this.displayName),y,x,"Payments", String(timestamp)), {
       Carplate: b,
       Carpark: c,
       EndTime: e,
@@ -157,7 +167,13 @@ methods: {
       StartTime: d,
       Type: "Visa"
       })
-      console.log(docRef2)
+      const docRef3 = await setDoc(doc(db, "Session",String(this.displayName), "N", String(g) ), {
+        Number: String(timestamp) 
+        })
+
+
+        console.log(docRef2)
+        console.log(docRef3)
     },
 
     async updateDB() {

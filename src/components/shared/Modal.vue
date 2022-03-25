@@ -2,15 +2,15 @@
   <div class="modal-overlay" @click="$emit('close-modal')">
     <div class="modal" @click.stop>
       <h1 style="font-size:30px; color:rgb(59,130,246);"><strong>Payment Confirmation</strong></h1>
-      <h2> Hi {{displayName}}, Thank you. </h2>
+      <h2> Hi {{this.displayName}}, Thank you. </h2>
       <p><strong>Your Payment is Successful!</strong></p>
       <p>A confirmation email has been sent to {{email}}.</p>
       <u>Session Details</u><br><br>
-      Session Number: {{Session_Number}}<br>
-      Payment Date: {{timestamp}}<br>
-      Payment Type: Credit Card<br>
-      Carpark: {{CarPark}}<br>
-      Amount Paid: SGD{{Rates}} <br>  <br>
+      Session Number: {{this.Session_Number}}<br>
+      Payment Date: {{timestamp}} <br>
+      Payment Type: {{this.Type}}<br>
+      Carpark: {{this.CarPark}}<br>
+      Amount Paid: SGD{{this.Rates}} <br>  <br>
       <router-link :to="{ name: 'Payment'	}" 
 			button @click = "getCarPlate" class="w-full text-center px-4 py-3 bg-blue-500 rounded-md shadow-md text-white font-semibold">OK</router-link>
 
@@ -28,7 +28,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default {
 	name: 'Modal',
-  props: ['Session_Number','CarPark','Rates'],
+  props: ['Session_Number','CarPark','Rates', "Type"],
 	components: {
 	},
 	data() { 
@@ -56,7 +56,7 @@ export default {
       const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
       const dateTime = date +' '+ time;
       this.timestamp = dateTime;
-      
+      return this.timestamp
       },
 
   }
