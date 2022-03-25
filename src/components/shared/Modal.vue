@@ -7,7 +7,7 @@
       <p>A confirmation email has been sent to {{email}}.</p>
       <u>Session Details</u><br><br>
       Session Number: {{this.Session_Number}}<br>
-      Payment Date: {{timestamp}} <br>
+      Payment Date: {{getNow()}} <br>
       Payment Type: {{this.Type}}<br>
       Carpark: {{this.CarPark}}<br>
       Amount Paid: SGD{{this.Rates}} <br>  <br>
@@ -34,7 +34,7 @@ export default {
 	data() { 
 		return {
 		displayName: "",
-    timestamp: "",
+    paymentTimestamp: "",
     email: "",
 		}
 	},
@@ -50,13 +50,13 @@ export default {
 		})
 	},
   methods: {
-    getNow: function() {
+    getNow() {
       const today = new Date();
       const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-      const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+      const time = today.getHours() + ":" + today.getMinutes();
       const dateTime = date +' '+ time;
-      this.timestamp = dateTime;
-      return this.timestamp
+      this.paymentTimestamp = dateTime
+      return dateTime
       },
 
   }

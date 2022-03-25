@@ -31,7 +31,7 @@
     </div>
     <div class="w-1/3 px-3">
      <label class="block mb-3 text-gray-600" for="">CVC</label>
-     <input id ="cvc" type="number" required class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest" 
+     <input id ="cvc" type="tel" required class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest" 
      :maxlength ="4"/>
     </div>
    </div>

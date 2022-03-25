@@ -19,7 +19,7 @@
 				
 				</div>
 				<div class="mb-6">
-					<label class="block mb-3 text-gray-600" for="">Car Number</label>
+					<label class="block mb-3 text-gray-600" for="">Vehicle Number</label>
 					<input id="number" required type="text" v-model="CarNum" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest"/>
 				</div>
 				<div class="mb-6">
@@ -115,10 +115,10 @@ methods: {
 		error.textContent = "Please select a carpark"
 		error.style.color = "red"
     } else if (document.getElementById("number").value=="") {
-		error.textContent = "Please enter a valid car number"
+		error.textContent = "Please enter a valid vehicle number"
 		error.style.color = "red"
 	} else if (document.getElementById("number").value.length <6) {
-		error.textContent = "Car number must at least be six digits"
+		error.textContent = "" + document.getElementById("number").value + " does not look correct. Please enter a valid vehicle number."
 		error.style.color = "red"
 	} else {
 	this.$router.push({name: 'Checkout', params: {
