@@ -35,9 +35,10 @@ export default {
         let doc = docs.data();
         carpark["name"] = doc.name;
         carpark["carparkType"] = doc.carparkType;
-        carpark["marginTop"] = "15px";
-        carpark["priceEntry"] = doc.priceEntry;
+        carpark["marginTopPrice"] = doc.marginTopPrice;
+        carpark["marginTopButton"] = doc.marginTopButton;
         carpark["priceHr"] = doc.priceHr;
+        carpark["isCoupon"] = doc.isCoupon;
         carpark["isGantry"] = doc.isGantry;
         carpark["lat"] = doc.lat;
         carpark["lng"] = doc.lng;
@@ -64,10 +65,11 @@ export default {
           :distance="carpark.distance"
           :numLots="carpark.numLots"
           :carparkType="carpark.carparkType"
-          :marginTop="carpark.marginTop"
-          :priceEntry="carpark.priceEntry"
+          :marginTopPrice="carpark.marginTopPrice"
+          :marginTopButton="carpark.marginTopButton"
           :priceHr="carpark.priceHr"
           :textColor="carpark.textColor"
+          :isCoupon="carpark.isCoupon"
           :isGantry="carpark.isGantry"
           :isFavColor="carpark.isFavColor"
           :lat="carpark.lat"

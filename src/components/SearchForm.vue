@@ -11,7 +11,7 @@
           />
         </form>
       </div>
-      <div id="geolocationbutton-item">
+      <div id="geolocationbutton-item" v-if="loaded">
         <button id="geolocation" type="button" v-on:click="GetLocation()">
           <span id="geolocation-label">
             <svg id="geolocation-root" focusable="false" viewBox="0 0 24 24">
@@ -23,7 +23,7 @@
         </button>
       </div>
     </div>
-    <div class="layout">
+    <div class="layout" v-if="loaded">
       <div id="checkbox-item1">
         <form id="checkbox1">
           <input type="checkbox" id="evcharging" value="True" />
@@ -37,7 +37,7 @@
         </form>
       </div>
     </div>
-    <div class="layout">
+    <div class="layout" v-if="loaded">
       <div id="slider-item">
         <form id="slider1">
           <input
@@ -56,7 +56,7 @@
         </form>
       </div>
     </div>
-    <div id="layout">
+    <div id="layout" v-if="loaded">
       <div id="button-item">
         <button id="searchButton" type="button" v-on:click="SearchCarparks()">
           Search
@@ -72,7 +72,7 @@ import axios from "axios";
 import firebaseApp from "../firebase.js";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 const db = getFirestore(firebaseApp);
 
 export default {
@@ -80,6 +80,7 @@ export default {
   data() {
     return {
       user: false,
+      loaded: false,
     };
   },
   mounted() {
@@ -94,6 +95,7 @@ export default {
         this.user = user;
       }
     });
+    this.loaded = true;
   },
   methods: {
     DegtoRad: function (deg) {
@@ -163,13 +165,13 @@ export default {
             carpark["distance"] = distanceAway;
             carpark["numLots"] = item.AvailableLots;
             carpark["carparkType"] = "Gantry";
-            carpark["marginTop"] = "58px";
-            carpark["priceEntry"] = 2.5;
-            carpark["priceHr"] = 1.27;
+            carpark["marginTopPrice"] = "0px";
+            carpark["marginTopButton"] = "110px";
             if (item.AvailableLots < 10) {
               carpark["textColor"] = "red";
             }
-            carpark["isGantry"] = false;
+            carpark["isCoupon"] = false;
+            carpark["isGantry"] = true;
             carpark["lat"] = carparkLat;
             carpark["lng"] = carparkLng;
             carpark["id"] = item.CarParkID;
@@ -186,6 +188,41 @@ export default {
             carparks.push(carpark);
             carpark = {};
           }
+        }
+      }
+      let dbCollection = await getDocs(collection(db, "Carparks"));
+      //console.log(dbCollection.docs);
+
+      for (let document of dbCollection.docs) {
+        let doc = document.data();
+        let carparkLat = doc.Latitude;
+        let carparkLng = doc.Longitude;
+        if (this.GetDist(carparkLat, carparkLng, lat, lng) < 0.7) {
+          carpark["name"] = doc.Name;
+          let distanceAway = this.GetDist(carparkLat, carparkLng, lat, lng);
+          carpark["distance"] = distanceAway;
+          carpark["numLots"] = 0;
+          carpark["carparkType"] = "Coupon";
+          carpark["marginTopPrice"] = "35px";
+          carpark["marginTopButton"] = "0px";
+          carpark["priceHr"] = doc.Price;
+          carpark["isCoupon"] = true;
+          carpark["isGantry"] = false;
+          carpark["lat"] = doc.Latitude;
+          carpark["lng"] = doc.Longitude;
+          carpark["id"] = doc.Name;
+          if (this.user) {
+            let bookmarked = await this.IsBookMarked(doc.Name);
+            if (bookmarked == true) {
+              carpark["isFavColor"] = "red";
+            } else {
+              carpark["isFavColor"] = "black";
+            }
+          } else {
+            carpark["isFavColor"] = "black";
+          }
+          carparks.push(carpark);
+          carpark = {};
         }
       }
       console.log("DONE");
@@ -214,7 +251,7 @@ export default {
       }
       return false;
     },
-    SearchCarparks: function () {
+    SearchCarparks: async function () {
       /*
       var address = document.getElementById("addressbox").value;
       this.GetCarparks(

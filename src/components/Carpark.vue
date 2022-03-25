@@ -3,7 +3,11 @@
     <div id="flex-layout">
       <h3 id="capark-name">{{ name }}</h3>
       <h5 id="carpark-distance">{{ distance }}</h5>
-      <h5 id="carpark-lots" v-bind:style="{ color: textColor }">
+      <h5
+        v-show="isGantry"
+        id="carpark-lots"
+        v-bind:style="{ color: textColor }"
+      >
         {{ numLots }}
       </h5>
       <h5 id="carpark-type">{{ carparkType }} Carpark</h5>
@@ -12,15 +16,23 @@
       </button>
     </div>
     <div id="flex-layout1">
-      <h5 id="carpark-pricentry" v-bind:style="{ marginTop: marginTop }">
-        ${{ priceEntry }}/entry
+      <h5
+        v-show="isCoupon"
+        id="carpark-pricehr"
+        v-bind:style="{ marginTop: marginTopPrice }"
+      >
+        ${{ priceHr }}/hr
       </h5>
-      <h5 id="carpark-pricehr">${{ priceHr }}/hr</h5>
-      <button id="getdirection" type="button" @click="getDirections">
+      <button
+        id="getdirection"
+        type="button"
+        @click="getDirections"
+        v-bind:style="{ marginTop: marginTopButton }"
+      >
         Directions
       </button>
       <br />
-      <button v-show="isGantry" type="button" onclick="" id="startsession">
+      <button v-show="isCoupon" type="button" onclick="" id="startsession">
         Start Parking
       </button>
     </div>
@@ -59,10 +71,11 @@ export default {
     distance: String,
     numLots: String,
     carparkType: String,
-    marginTop: String,
-    priceEntry: Number,
+    marginTopPrice: String,
+    marginTopButton: String,
     priceHr: Number,
     textColor: { default: "black", type: String },
+    isCoupon: Boolean,
     isGantry: Boolean,
     isFavColor: String,
     lat: Number,
@@ -101,19 +114,36 @@ export default {
             "CarParks",
             this.id
           );
-          await setDoc(docRef, {
-            CarParkID: this.id,
-            name: this.name,
-            carparkType: this.carparkType,
-            marginTop: this.marginTop,
-            priceEntry: this.priceEntry,
-            priceHr: this.priceHr,
-            textColor: this.textColor,
-            isGantry: this.isGantry,
-            isFavColor: "red",
-            lat: this.lat,
-            lng: this.lng,
-          });
+          if (this.isCoupon) {
+            await setDoc(docRef, {
+              CarParkID: this.id,
+              name: this.name,
+              carparkType: this.carparkType,
+              marginTopPrice: "13px",
+              marginTopButton: this.marginTopButton,
+              priceHr: this.priceHr,
+              textColor: this.textColor,
+              isCoupon: this.isCoupon,
+              isGantry: this.isGantry,
+              isFavColor: "red",
+              lat: this.lat,
+              lng: this.lng,
+            });
+          } else {
+            await setDoc(docRef, {
+              CarParkID: this.id,
+              name: this.name,
+              carparkType: this.carparkType,
+              marginTopPrice: this.marginTopPrice,
+              marginTopButton: "70px",
+              textColor: this.textColor,
+              isCoupon: this.isCoupon,
+              isGantry: this.isGantry,
+              isFavColor: "red",
+              lat: this.lat,
+              lng: this.lng,
+            });
+          }
           this.localIsFavColor = "red";
           alert("Bookmark added");
         }
