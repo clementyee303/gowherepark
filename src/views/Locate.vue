@@ -48,6 +48,7 @@ export default {
       this.lng = val.Lng;
       this.CarParks.sort(this.GetSortOrder("distance"));
       this.AddLocationsToGoogleMaps(this.lat, this.lng);
+      console.log(this.CarParks);
     },
     LoadMap: function () {
       this.map = new google.maps.Map(document.getElementById("map"), {
@@ -141,10 +142,11 @@ export default {
             :distance="'Distance: ' + carpark.distance + 'km'"
             :numLots="carpark.numLots + ' Lots Available'"
             :carparkType="carpark.carparkType"
-            :marginTop="carpark.marginTop"
-            :priceEntry="carpark.priceEntry"
+            :marginTopPrice="carpark.marginTopPrice"
+            :marginTopButton="carpark.marginTopButton"
             :priceHr="carpark.priceHr"
             :textColor="carpark.textColor"
+            :isCoupon="carpark.isCoupon"
             :isGantry="carpark.isGantry"
             :isFavColor="carpark.isFavColor"
             :lat="carpark.lat"
