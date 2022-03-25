@@ -6,17 +6,17 @@
       <p id="totalAmt" style="font-size: small; text-align: left;"> {{total}} SGD ({{startDate}} - {{endDate}})</p>
       <p style="font-size: x-small; color: #FF6161; text-align: left;">+{{increaseAmt}}({{increasePercent}}%)^past year</p>
     </div>
-    <column-chart prefix="$" :data="barChartData" :colors="[['#482BE7']]"></column-chart>
+    <column-chart v-if="done" prefix="$" :data="barChartData" :colors="[['#482BE7']]"></column-chart>
   </div> 
 </div>
 
 <div class="ppTransactions">
   <div class="topnav">
     <h1><b>Past Parking Transactions</b></h1>
-    <select name="month" id="month" @change=filterMonth()>
+    <select name="month" id="month" @change=filter()>
       <option value="01">January</option>
       <option value="02">February</option>
-      <option value="03">March</option>
+      <option selected value="03">March</option> <!-- Default Value -->
       <option value="04">April</option>
       <option value="05">May</option>
       <option value="06">June</option>
@@ -27,7 +27,7 @@
       <option value="11">November</option>
       <option value="12">December</option>
     </select>
-    <select name="year" id="year">
+    <select name="year" id="year" @change=filter()>
       <option value="2022">2022</option>
       <option value="2021">2021</option>
       <option value="2020">2020</option>
@@ -36,7 +36,7 @@
       <option value="2017">2017</option>
       <option value="2016">2016</option>
     </select>
-    <input type="text" id="searchBar" placeholder="Search by Location.." v-on:keyup.enter=filterLocation()>
+    <input type="text" id="searchBar" placeholder="Search by Location.." v-on:keyup.enter=filterBySearch()>
   </div>
   
   <div id = "display"> 
@@ -49,12 +49,14 @@
             <th>Direction</th>
           </thead>
           <tbody id="tableBody"></tbody>
+          
       </table><br><br>
-      
+    
       <!--
       <h1> {{this.dataArray}} </h1>
       <h1> {{this.barChartData}} </h1>
       -->
+      
   </div>
 </div>
 </template>
@@ -66,108 +68,59 @@ import { collection, getDocs , query, where} from 'firebase/firestore';
 const db = getFirestore(firebaseApp);
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-// Chart Display
-let startDate = "February 2022";
-let endDate = "March 2022";
-let increaseAmt = Math.round(Math.random()*500);
-
-
-/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// Drawing data from firebase
-let drawnData = [];
-
-db.collection("preferences").get().then(querySnapshot => {
-    console.log(`Found ${querySnapshot.size} documents.`);
-    querySnapshot.forEach(doc => {
-        // doc.data() is never undefined for query doc snapshots
-        const engineerDetails = doc.data();
-        drawnData.push(engineerDetails);
-    });
-
-    // Here the engineers array is fully populated
-    console.log(drawnData.length);
-    res.json(drawnData);
-});
-
-// Grouping by month
-// eslint-disable-next-line no-unused-vars
-var drawnData2 = {"22/02/2022": Math.random()*500, "23/02/2022": Math.random()*500,"26/03/2022": Math.random()*500}
-  ,groupKey = 0;
-      groups = myArray.reduce(function (r, o) {
-          var m = o.date.split(('-'))[1];
-          (r[m])? r[m].data.push(o) : r[m] = {group: String(groupKey++), data: [o]};
-          return r;
-      }, {});
-
-  var result = Object.keys(groups).map(function(k){ return groups[k]; });
-
-  console.log(result);
-*/
-
-// Will eventually draw data from firestore
-var cc = {"22/02/2022": Math.random()*500, "26/03/2022": Math.random()*500}
-        // "march": Math.random()*500, 
-        // "april": Math.random()*500, "may": Math.random()*500, "june": Math.random()*500, 
-        // "july": Math.random()*500, "august": Math.random()*500, "september": Math.random()*500, 
-        // "october": Math.random()*500, "november": Math.random()*500, "december": Math.random()*500}
-
-//const total = Math.round(sum(barChartData))
-//const total = 11;
-//console.log("this is total: " + total)
-//let increasePercent = Math.round(increaseAmt*100/ total);
-//document.getElementById("totalAmt").innerHTML = (String(total) + " SGD (January 2021 - January 2022)");
-
 export default {
     data() {
       return {
-        dataArray: [], // data to be displayed
-        barChartData: {},
-        //total,
-        cc,
-        startDate,
-        endDate,
-        increaseAmt,
-        //increasePercent
+        dataArray: [], 
+        barChartData: {}, // data to be displayed
+        startDate: "",
+        endDate: "",
+        total: 0,
+        increaseAmt: Math.round(Math.random()*10,2),
+        increasePercent:0 ,
+        selectedYear: "2022",
+        selectedMonth: "03",
+        done: false
       }
     },
 
-    // computed: {
-    //   chartData() {
-    //     return {
-    //       datasets: this.barChartData
-    //     }
-    //   }
-    // },
-
     methods: {
-      getData: async function(u){
-        let z = await getDocs(collection(db, u))
+      sum: function (lst){
+        var sum = 0;
+        for(var el in lst) {
+            sum += parseFloat(lst[el]);
+        }
+        return sum;
+      },
+
+      getTotal: function (){
+        this.total = Math.round(this.sum(this.barChartData))
+        //console.log("this is total: " + this.total)
+        this.increasePercent = Math.round(this.increaseAmt*100/ this.total);
+        //console.log("this is increasePercent: " + this.increasePercent)
+        this.startDate = Object.keys(this.barChartData)[0];
+        this.endDate = Object.keys(this.barChartData)[Object.keys(this.barChartData).length - 1];
+      },
+
+      getData: async function(){
+        let z = await getDocs(collection(db,"Transactions",String(this.displayName),"Year",this.selectedYear,"Month",this.selectedMonth,"Payments"));
+        console.log(z.docs)
         z.forEach((docs) => {
           let data = docs.data()
+          console.log(data);
           this.dataArray.push({Carpark : data.Carpark, EndTime: data.EndTime, Paid: data.Paid, Type: data.Type})
-          this.barChartData[data.EndTime] = parseFloat(data.Paid)
+          //this.barChartData[data.EndTime] = parseFloat(data.Paid)
           })
       },
 
-      // sum: function (obj){
-      //   var sum = 0;
-      //   for(var el in obj) {
-      //       sum += parseFloat(obj[el]);
-      //   }
-      //   return sum;
-      // },
-
-      getTotal: function (){},
-
-
-      display: function(snapshot) {
+      display: async function(snapshot) {
         // function to display the table 
-        
         //snapshot is my data
 
         // Clear table rows
         var tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
+        this.barChartData = {};
         
         // Get table ref
         var table = document.getElementById("table");
@@ -176,11 +129,10 @@ export default {
 
         // Loop through my data
         snapshot.forEach((docs) => {
-           
           // 1. Create table row from data 
           let yy = docs.data();
+          this.barChartData[yy.EndTime] = parseFloat(yy.Paid)
           var row = table.insertRow(serialNum);
-          //row.style.backgroundColor = "pink";
 
           var session = yy.EndTime;
           var paid = yy.Paid;
@@ -194,86 +146,78 @@ export default {
           var cell5 = row.insertCell(4);
 
           cell1.innerHTML = session // Date is in string -  23/3/2022 15:47
-          cell1.style.border = 'thin solid #999';
           cell2.innerHTML = "$" + paid;
-          cell2.style.border = 'thin solid #999';
           cell3.innerHTML = carpark;
-          cell3.style.border = 'thin solid #999';
           cell4.innerHTML = type;
           cell4.style.color = '#00FF00';
-          cell4.style.border = 'thin solid #999';
           var navigationButton = document.createElement("button");
           navigationButton.className = "navigationButton";
           navigationButton.id = String("destination");
-          navigationButton.innerHTML = "navigate";
+          navigationButton.innerHTML = `<img class ="float-left w-5" src="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-ios7-navigate-outline-512.png">`;
           navigationButton.addEventListener('click', function(){
               var url = "https://www.google.com/maps/dir/?api=1&destination=" + carpark + "&travelmode=driving" 
               window.open(url, "_blank");
           })
           cell5.appendChild(navigationButton);
-          cell5.style.backgroundColor= '#6366f1';
-          //cell5.style.borderRadius = "5";
 
           serialNum++;
 
           // 2. Aggregate my data for chart
-          
+          this.getTotal()
         })
       },
-      initLoad: async function (u) {
+
+      initLoad: async function () {
         // Initial loading upon page open
-        let Pptransact = await getDocs(collection(db, u));
+        let Pptransact = await getDocs(collection(db,"Transactions",String(this.displayName),"Year",this.selectedYear,"Month",this.selectedMonth,"Payments"));
         this.display(Pptransact);
       },
       
-      filterMonth: async function(){
-        let selected = document.getElementById('month').value;
-        let Pptransact = await getDocs(collection(db, this.displayName));
-        Pptransact.forEach((docs) => {
-          let yy = docs.data();
-          // TO DO-----------
-          var month = yy.Date;
-          console.log(yy.Date);
-          console.log(month)
-          console.log(selected)
-        })
+      filter: async function(){
+        let selectedMonth = document.getElementById('month').value;
+        this.selectedMonth = selectedMonth;
+        let selectedYear = document.getElementById('year').value;
+        this.selectedYear = selectedYear;
+        console.log(selectedMonth);
+        // Get query
+        const Pptransact = collection(db,"Transactions",String(this.displayName),"Year",selectedYear,"Month",selectedMonth,"Payments");  
+        const q = query(Pptransact);
+        const querySnapshot = await getDocs(q);
+        this.display(querySnapshot);
       },
-      filterLocation: async function(){
+
+      filterBySearch: async function(){
         // Get searchbar value 
         let searchText = document.getElementById('searchBar').value;
         if(searchText == ""){
-          this.initLoad(this.displayName)
+          this.initLoad()
         } else {
           console.log(searchText);
           // Get query
-          const Pptransact = collection(db, this.displayName);  
+          const Pptransact = collection(db,"Transactions",String(this.displayName),"Year",this.selectedYear,"Month",this.selectedMonth,"Payments");  
           const q = query(Pptransact, where("Carpark", "==", searchText));
           const querySnapshot = await getDocs(q);
           this.display(querySnapshot);
         }
       }
     },
-    // beforeMount(){
-    //   this.getData(this.user.displayName)
-    // },
+
     mounted(){
-      const auth = getAuth();
+      
+      const auth = getAuth(firebaseApp);
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          this.displayName = user.displayName + "_";
-          this.initLoad(this.displayName);
-          this.getData(this.displayName);
-         
-          console.log(this.dataArray) // Check data
-          // 0: {Carpark: '11A BOON TIONG ROAD', EndTime: '24/3/2022 22:06', Paid: '2.80', Type: 'Visa'}
-          // 1: {Carpark: '121 CANBERRA ST', EndTime: '25/3/2022 22:06', Paid: '3.5', Type: 'Visa'}
-          //console.log(Object.assign({}, this.chartData.datasets))
+          this.displayName = user.email;
+          this.getData()
+          this.initLoad();
+          this.done = true;         
+        } else {
+          this.displayName = "Guest";
         }
-      })
+      });
     },
   }
 </script>
-
 
 <style scoped>
 .chart {
@@ -338,7 +282,6 @@ select{
 }
 
 th, td {
-  border: 1px solid #999;
   padding: 0.5rem;
   text-align: center;
 }
@@ -353,13 +296,13 @@ th{
 	margin: auto;
 	width: 50%;
 	height: 10%;
-	border: 1px solid grey;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 }
 
 .ppTransactions{
 	margin: auto;
 	width: 80%;
-	border: 1px solid grey;
+	box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 	margin-top: 2%;	
 }
 </style>
