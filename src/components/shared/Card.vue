@@ -159,7 +159,7 @@ methods: {
 
       const timestamp = (new Date()).getTime()
 
-      const docRef2 = await setDoc(doc(db, "Transactions",String(this.displayName),y,x,"Payments", String(timestamp)), {
+      const docRef2 = await setDoc(doc(db, "Transactions",String(this.displayName),"Year",y,"Month",x,"Payments", String(timestamp)), {
       Carplate: b,
       Carpark: c,
       EndTime: e,
