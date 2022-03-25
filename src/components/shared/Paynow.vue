@@ -50,7 +50,7 @@ mounted() {
 		const auth = getAuth(firebaseApp);
 		onAuthStateChanged(auth, (user) => {
 			if (user) {
-				this.displayName = user.displayName;
+				this.displayName = user.email;
 			} else {
 				this.displayName = "Guest"
 			}

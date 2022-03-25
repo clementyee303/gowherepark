@@ -57,7 +57,7 @@ export default {
 		const auth = getAuth(firebaseApp);
 		onAuthStateChanged(auth, (user) => {
 			if (user) {
-				this.displayName = user.displayName;
+				this.displayName = user.email;
 				this.getData(this.displayName)
 			} else {
 				this.displayName = "Guest"
