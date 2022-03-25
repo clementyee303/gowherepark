@@ -31,7 +31,7 @@ import Card from "@/components/shared/Card.vue";
 import Paynow from "@/components/shared/Paynow.vue";
 import Summary from "@/components/shared/Summary.vue";
 import firebaseApp from '../firebase.js';
-import { getFirestore, getDocs, collection} from 'firebase/firestore'
+import { getFirestore, getDocs,  collection} from 'firebase/firestore'
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 const db = getFirestore(firebaseApp);
 
@@ -67,12 +67,12 @@ export default {
 	},
 methods: {
 	async getData(display){
-		const name = String(display) + '_'
-		const collect = collection(db, String(name))
+		const name = String(display) 
+		const collect = collection(db, "Session", String(name) ,"N")
 		const Snapshot = await getDocs(collect)
-		const userList = Snapshot.docs.map(doc => doc.data() );
+		console.log(Snapshot)
+		const userList = Snapshot.docs.map(doc => doc.data() )
 		this.size = userList.length + 1
-
 		return this.carParkArray, this.size
 	},
 }
