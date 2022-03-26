@@ -51,12 +51,11 @@
           <tbody id="tableBody"></tbody>
           
       </table><br><br>
-    
+      
       <!--
-      <h1> {{this.dataArray}} </h1>
+      <h1> {{this.carparkName}} </h1>
       <h1> {{this.barChartData}} </h1>
       -->
-      
   </div>
 </div>
 </template>
@@ -71,7 +70,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 export default {
     data() {
       return {
-        dataArray: [], 
+        carparkName: [], 
         barChartData: {}, // data to be displayed
         startDate: "",
         endDate: "",
@@ -108,8 +107,8 @@ export default {
         z.forEach((docs) => {
           let data = docs.data()
           console.log(data);
-          this.dataArray.push({Carpark : data.Carpark, EndTime: data.EndTime, Paid: data.Paid, Type: data.Type})
-          //this.barChartData[data.EndTime] = parseFloat(data.Paid)
+          this.carparkName.push(data.Carpark)
+          this.carparkName = [...new Set(this.carparkName)] // Distinct name
           })
       },
 
@@ -189,11 +188,20 @@ export default {
       filterBySearch: async function(){
         // Get searchbar value 
         let searchText = document.getElementById('searchBar').value;
+        searchText = searchText.toUpperCase()
         if(searchText == ""){
           this.initLoad()
         } else {
-          console.log(searchText);
+          // Loop through unique carpark name
+          for (var i = 0; i < this.carparkName.length; i++){
+            if((new RegExp(searchText)).test(this.carparkName[i])){
+              console.log("this is loc " + this.carparkName[i])
+              searchText = this.carparkName[i];
+            }
+          }
+          // console.log(searchText);
           // Get query
+          console.log("this is aft loc" + searchText)
           const Pptransact = collection(db,"Transactions",String(this.displayName),"Year",this.selectedYear,"Month",this.selectedMonth,"Payments");  
           const q = query(Pptransact, where("Carpark", "==", searchText));
           const querySnapshot = await getDocs(q);
@@ -211,6 +219,10 @@ export default {
           this.getData()
           this.initLoad();
           this.done = true;         
+
+          console.log(this.carparkName)
+          // console.log((new RegExp('searchBarText')).test(CarparkLocation)))
+
         } else {
           this.displayName = "Guest";
         }
