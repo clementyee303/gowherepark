@@ -32,7 +32,12 @@
         Directions
       </button>
       <br />
-      <button v-show="isCoupon" type="button" onclick="" id="startsession">
+      <button
+        v-show="isCoupon"
+        type="button"
+        @click="startParking"
+        id="startsession"
+      >
         Start Parking
       </button>
     </div>
@@ -163,6 +168,14 @@ export default {
         return true;
       }
       return false;
+    },
+    startParking: function () {
+      this.$router.push({
+        name: "Payment",
+        params: {
+          carparkName: this.name,
+        },
+      });
     },
   },
 };
