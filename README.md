@@ -1,4 +1,12 @@
-# gowherepark
+# GoWherePark
+## About 
+GoWherePark is a web application developed to help motorists search for available parking in Singapore. It also integrates payment for coupon parking in numerous open-space carparks.
+
+The main features of the web applications is
+- Locate carparks - distance, parking lots availability
+- Payment for open-space carparks
+- View historical parking transactions
+- View favourite carparks
 
 ## Project setup
 ```
