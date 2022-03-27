@@ -11,8 +11,7 @@
 				<div class="mb-6">
 					<label class="block mb-3 text-gray-600" for="">Car Park</label>
 	
-					<select id="cpn" v-model="selectedValue" @change="onChange($event)" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest">
-		
+					<select id="carpark" v-model="selectedValue" @change="onChange($event)" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest">
 					<option 
 					v-for="carPark in carParkArray" v-bind:key="carPark.Name" v-bind:value="carPark.Name">{{ carPark.Name }}
 					
@@ -101,11 +100,12 @@ beforeMount(){
 methods: {
 
 	async getData(){
-		let z = await getDocs(collection(db, "Carpark"))
+		let z = await getDocs(collection(db, "park"))
 		z.forEach((docs) => {
 			let data =   docs.data()
-			this.carParkArray.push({Name : data.Name, Price: data.Price})
+			this.carParkArray.push({Name : data.Address, Price: data.Price})
 			})
+	
 		return this.carParkArray
 	},
 
@@ -183,10 +183,10 @@ methods: {
 	},
 	
 	async onChange(event) {
-		let z = await getDocs(collection(db, "Carpark"))
+		let z = await getDocs(collection(db, "park"))
 		z.forEach((docs) => {
 			let data =  docs.data()
-			if ( String(data.Name) === String(event.target.value)) {
+			if ( String(data.Address) === String(event.target.value)) {
 				this.Rates = (data.Price * (this.Minute/30)).toFixed(2)
 			} 
 			})
