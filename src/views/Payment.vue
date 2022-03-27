@@ -11,6 +11,9 @@ const auth = getAuth(firebaseApp);
 
 export default {
 	name: 'Payment',
+
+	props: ["carparkName"],
+
 	components: {
 	EnterParkingInfo,
 	ExtendParking
@@ -35,8 +38,6 @@ mounted(){
 
 
 
-
-
 methods: {
 	async getDisplay(u){
 		let z = await getDocs(collection(db, u))
@@ -51,7 +52,7 @@ methods: {
 
 <template>
 	<div v-if = "Display === false">
-		<EnterParkingInfo/>
+		<EnterParkingInfo :carparkName="this.carparkName"> </EnterParkingInfo>
 	</div>
 	<div v-else-if = "Display === true">
 		<ExtendParking/>
