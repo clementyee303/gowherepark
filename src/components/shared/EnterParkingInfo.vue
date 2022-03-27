@@ -11,9 +11,11 @@
 				<div class="mb-6">
 					<label class="block mb-3 text-gray-600" for="">Car Park</label>
 	
-					<select id="carpark" v-model="selectedValue" @change="onChange($event)" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest">
+					<select id="cpn" v-model="selectedValue" @change="onChange($event)" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest">
+		
 					<option 
 					v-for="carPark in carParkArray" v-bind:key="carPark.Name" v-bind:value="carPark.Name">{{ carPark.Name }}
+					
 					</option>
 					</select>
 				
@@ -70,8 +72,7 @@ const db = getFirestore(firebaseApp);
 
 export default {
  name: "EnterParking",
-
-
+props: ["carparkName"],
 data() {
     return {
 		Minute: 30,
@@ -83,6 +84,7 @@ data() {
 		selectedCarpark: "",
 		carplate: "",
 		carParkArray: [],
+		selectedValue: this.carparkName,
 	}
  },
 
@@ -91,10 +93,13 @@ beforeMount(){
 	this.getEndTime()
  },
 
+
+
  created() {
 	setInterval(this.getNow, 1000);
  },
 methods: {
+
 	async getData(){
 		let z = await getDocs(collection(db, "Carpark"))
 		z.forEach((docs) => {

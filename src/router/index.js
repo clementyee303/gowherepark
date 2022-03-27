@@ -36,6 +36,7 @@ const routes = [
 		meta: {
 			title: 'Payment',
 		},
+		props: true
 	},
 	{
 		path: '/ExtendPayment',
