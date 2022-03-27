@@ -105,7 +105,6 @@ methods: {
 			let data =   docs.data()
 			this.carParkArray.push({Name : data.Address, Price: data.Price})
 			})
-	
 		return this.carParkArray
 	},
 
@@ -136,9 +135,17 @@ methods: {
 	}
 	},
 
-	getEndTime(){
+	async getEndTime(){
 		this.EndTime = this.getDateFormat(30)
-		return this.EndTime
+		
+		let z = await getDocs(collection(db, "park"))
+		z.forEach((docs) => {
+		let data =  docs.data()
+			if ( String(data.Address) === this.carparkName) {
+				this.Rates = (data.Price * (this.Minute/30)).toFixed(2)
+			} 
+			})
+		return this.EndTime, this.Rates
 	},
 
 	decrease() {
@@ -209,7 +216,6 @@ methods: {
 					const dateTime = date +' '+ time;
                     this.StartTime = dateTime;
                 },
-
 }
 };
 </script>
