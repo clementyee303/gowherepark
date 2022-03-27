@@ -190,7 +190,7 @@ export default {
           }
         }
       }
-      let dbCollection = await getDocs(collection(db, "Carparks"));
+      let dbCollection = await getDocs(collection(db, "Carpark"));
       //console.log(dbCollection.docs);
 
       for (let document of dbCollection.docs) {
@@ -225,7 +225,7 @@ export default {
           carpark = {};
         }
       }
-      console.log("DONE");
+
       this.$emit("addCarparks", {
         carparkList: carparks,
         Lat: lat,

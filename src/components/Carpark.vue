@@ -170,12 +170,16 @@ export default {
       return false;
     },
     startParking: function () {
-      this.$router.push({
-        name: "Payment",
-        params: {
-          carparkName: this.name,
-        },
-      });
+      if (this.user == false) {
+        alert("Please login to start parking");
+      } else {
+        this.$router.push({
+          name: "Payment",
+          params: {
+            carparkName: this.name,
+          },
+        });
+      }
     },
   },
 };

@@ -39,7 +39,6 @@ export default {
       this.lng = lng;
       this.CarParks.sort(this.GetSortOrder("distance"));
       this.AddLocationsToGoogleMaps(this.lat, this.lng);
-      console.log("COMPLETED");
     },
     addCarparks: function (val) {
       document.getElementById("sortoptions").value = "distance";
@@ -85,11 +84,18 @@ export default {
           map: this.map,
         });
         google.maps.event.addListener(marker, "click", () => {
-          infowindow.setContent(
-            `<div class="name">${carpark.name}</div>
-            <div class="lots">${carpark.numLots} Lots</div>
-            <button type="button" onclick="getDirections(${carpark.lat}, ${carpark.lng})" id="getdirection">Directions</button>`
-          );
+          if (carpark.isGantry) {
+            infowindow.setContent(
+              `<div class="name">${carpark.name}</div>
+              <div class="lots">${carpark.numLots} Lots</div>
+              <button type="button" onclick="getDirections(${carpark.lat}, ${carpark.lng})" id="getdirection">Directions</button>`
+            );
+          } else {
+            infowindow.setContent(
+              `<div class="name">${carpark.name}</div>
+              <button type="button" onclick="getDirections(${carpark.lat}, ${carpark.lng})" id="getdirection">Directions</button>`
+            );
+          }
           infowindow.open(this.map, marker);
         });
       });
