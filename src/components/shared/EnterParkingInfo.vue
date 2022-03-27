@@ -100,7 +100,7 @@ beforeMount(){
 methods: {
 
 	async getData(){
-		let z = await getDocs(collection(db, "park"))
+		let z = await getDocs(collection(db, "Carpark"))
 		z.forEach((docs) => {
 			let data =   docs.data()
 			this.carParkArray.push({Name : data.Address, Price: data.Price})
@@ -138,7 +138,7 @@ methods: {
 	async getEndTime(){
 		this.EndTime = this.getDateFormat(30)
 		
-		let z = await getDocs(collection(db, "park"))
+		let z = await getDocs(collection(db, "Carpark"))
 		z.forEach((docs) => {
 		let data =  docs.data()
 			if ( String(data.Address) === this.carparkName) {
