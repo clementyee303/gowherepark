@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvx2MryMGwfQp8ERiDTR35Of9SLAGs0BI&libraries=places"></script>
+    <script id="googleapi"></script>
+    <!-- <script id="googleapi" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvx2MryMGwfQp8ERiDTR35Of9SLAGs0BI&libraries=places"></script> -->
   </head>
 
   <body>
@@ -17,3 +18,10 @@
     <!-- built files will be auto injected -->
   </body>
 </html>
+<script>
+  fetch("https://firestore.googleapis.com/v1/projects/bt3103-assignment/databases/(default)/documents/google/google")
+  .then(response => response.json())
+  .then(
+    details => document.getElementById("googleapi").src = details["fields"]["api"]["stringValue"]
+  )
+</script>
