@@ -105,6 +105,7 @@ methods: {
 			let data =   docs.data()
 			this.carParkArray.push({Name : data.Name, Price: data.Price})
 			})
+		this.selectedCarpark = this.selectedValue
 		return this.carParkArray
 	},
 
