@@ -103,7 +103,7 @@ methods: {
 		let z = await getDocs(collection(db, "Carpark"))
 		z.forEach((docs) => {
 			let data =   docs.data()
-			this.carParkArray.push({Name : data.Address, Price: data.Price})
+			this.carParkArray.push({Name : data.Name, Price: data.Price})
 			})
 		return this.carParkArray
 	},
@@ -141,7 +141,7 @@ methods: {
 		let z = await getDocs(collection(db, "Carpark"))
 		z.forEach((docs) => {
 		let data =  docs.data()
-			if ( String(data.Address) === this.carparkName) {
+			if ( String(data.Name) === this.carparkName) {
 				this.Rates = (data.Price * (this.Minute/30)).toFixed(2)
 			} 
 			})
@@ -193,7 +193,7 @@ methods: {
 		let z = await getDocs(collection(db, "park"))
 		z.forEach((docs) => {
 			let data =  docs.data()
-			if ( String(data.Address) === String(event.target.value)) {
+			if ( String(data.Name) === String(event.target.value)) {
 				this.Rates = (data.Price * (this.Minute/30)).toFixed(2)
 			} 
 			})
