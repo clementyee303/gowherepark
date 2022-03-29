@@ -3,8 +3,10 @@
   <div class="chart">
     <div class="header">
       <p style="font-size: x-large; text-align: left;">Monthly Expenditures</p>
-      <p id="totalAmt" style="font-size: small; text-align: left;"> {{total}} SGD ({{startDate}} - {{endDate}})</p>
+      <p v-if= "total!=0" id="totalAmt" style="font-size: small; text-align: left;"> {{total}} SGD ({{startDate}} - {{endDate}})</p>
+      <!--
       <p style="font-size: x-small; color: #FF6161; text-align: left;">+{{increaseAmt}}({{increasePercent}}%)^past year</p>
+      -->
     </div>
     <column-chart v-if="done" prefix="$" :data="barChartData" :colors="[['#482BE7']]"></column-chart>
   </div> 
@@ -93,12 +95,12 @@ export default {
       },
 
       getTotal: function (){
-        this.total = Math.round(this.sum(this.barChartData))
+        this.total = Math.round(this.sum(this.barChartData), 2)
         //console.log("this is total: " + this.total)
         this.increasePercent = Math.round(this.increaseAmt*100/ this.total);
         //console.log("this is increasePercent: " + this.increasePercent)
-        this.startDate = Object.keys(this.barChartData)[0];
-        this.endDate = Object.keys(this.barChartData)[Object.keys(this.barChartData).length - 1];
+        this.startDate = Object.keys(this.barChartData)[0].substring(0, 9);
+        this.endDate = Object.keys(this.barChartData)[Object.keys(this.barChartData).length - 1].substring(0, 9);
       },
 
       getData: async function(){
@@ -114,7 +116,11 @@ export default {
 
       display: async function(snapshot) {
         // function to display the table 
-        //snapshot is my data
+        // Initiallize everything
+        this.total = 0
+        this.increasePercent = 0
+        this.startDate = ""
+        this.endDate = ""
 
         // Clear table rows
         var tableBody = document.getElementById("tableBody");
