@@ -94,7 +94,7 @@ methods: {
 			z.forEach((docs) => {
 				let data =  docs.data()
 				this.Rates = data.Price
-				this.CarPlateNum = data.Carplate 
+				this.CarPlateNum = data.Carplate.toUpperCase() 
 				this.RatesPermin = data.RatesPerMin
 				this.CarPark = data.Carpark
 				this.StartDate = data.StartTime

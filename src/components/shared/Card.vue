@@ -114,7 +114,7 @@ methods: {
       error.textContent = "Please enter a valid card number"
       error.style.color = "red"
     } else if (document.getElementById("cvc").value=="") {
-      error.textContent = "Please enter a valid cvc"
+      error.textContent = "Please enter a valid CVC"
       error.style.color = "red"
     } else if (document.getElementById("month").value=="Month" || document.getElementById("year").value=="Year") {
       error.textContent = "Please select a valid expiration date"

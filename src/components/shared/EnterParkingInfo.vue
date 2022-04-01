@@ -21,7 +21,7 @@
 				</div>
 				<div class="mb-6">
 					<label class="block mb-3 text-gray-600" for="">Vehicle Number</label>
-					<input id="number" required type="text"  style="text-transform:uppercase" v-model="CarNum" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest"/>
+					<input id="number" required type="text" style="text-transform:uppercase" v-model="CarNum" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest"/>
 				</div>
 				<div class="mb-6">
 					
@@ -92,8 +92,6 @@ beforeMount(){
 	this.getEndTime()
  },
 
-
-
  created() {
 	setInterval(this.getNow, 1000);
  },
@@ -110,7 +108,7 @@ methods: {
 	},
 
 	getCarPlate() {
-		this.carplate = this.CarNum
+		this.carplate = this.CarNum.toUpperCase()
 		return this.carplate
 	},
 
@@ -191,7 +189,7 @@ methods: {
 	},
 	
 	async onChange(event) {
-		let z = await getDocs(collection(db, "park"))
+		let z = await getDocs(collection(db, "Carpark"))
 		z.forEach((docs) => {
 			let data =  docs.data()
 			if ( String(data.Name) === String(event.target.value)) {
