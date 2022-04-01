@@ -1,5 +1,5 @@
-# gowherepark
-
+# GoWherePark
+GoWherePark is a web application developed to solve issues commonly faced by motorists in Singapore. It aims to provide parking information, provide payment transactions and track past transactions.
 ## Project setup
 ```
 npm install
