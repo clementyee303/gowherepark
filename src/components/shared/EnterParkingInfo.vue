@@ -21,7 +21,7 @@
 				</div>
 				<div class="mb-6">
 					<label class="block mb-3 text-gray-600" for="">Vehicle Number</label>
-					<input id="number" required type="text" v-model="CarNum" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest"/>
+					<input id="number" required type="text"  style="text-transform:uppercase" v-model="CarNum" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest"/>
 				</div>
 				<div class="mb-6">
 					

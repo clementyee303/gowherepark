@@ -5,7 +5,7 @@
   <div class="p-10 rounded-md shadow-md bg-white">
    <div class="mb-6">
     <label class="block mb-3 text-gray-600" for="">Name on Card</label>
-    <input id="name" type="text" required class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-wider"/>
+    <input id="name" type="text" required style="text-transform:uppercase" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-wider"/>
    </div>
    <div class="mb-6">
     <label class="block mb-3 text-gray-600" for="">Card Number</label>
