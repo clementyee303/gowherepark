@@ -84,18 +84,23 @@ export default {
     };
   },
   mounted() {
-    new google.maps.places.Autocomplete(document.getElementById("addressbox"), {
-      bounds: new google.maps.LatLngBounds(
-        new google.maps.LatLng(1.29027, 103.851959)
-      ),
-    });
-    const auth = getAuth(firebaseApp);
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.user = user;
-      }
-    });
-    this.loaded = true;
+    setTimeout(() => {
+      new google.maps.places.Autocomplete(
+        document.getElementById("addressbox"),
+        {
+          bounds: new google.maps.LatLngBounds(
+            new google.maps.LatLng(1.29027, 103.851959)
+          ),
+        }
+      );
+      const auth = getAuth(firebaseApp);
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          this.user = user;
+        }
+      });
+      this.loaded = true;
+    }, 500);
   },
   methods: {
     DegtoRad: function (deg) {
