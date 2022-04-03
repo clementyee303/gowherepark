@@ -46,13 +46,13 @@
             min="1.8"
             max="4.5"
             step="0.1"
-            value="1.8"
+            value="4.5"
             onchange=""
             oninput="heightOutputId.value = rangeInput.value"
           />
           <br />
-          <label for="rangeInput">Minimum Car Park Height Limit:</label>
-          <output id="heightOutputId">1.8</output>
+          <label for="rangeInput">Minimum Car Park Height:</label>
+          <output id="heightOutputId">4.5</output>
         </form>
       </div>
     </div>
@@ -136,6 +136,8 @@ export default {
       }
     },
     GetCarparks: async function (lat, lng) {
+      let isCharging = document.getElementById("evcharging").checked;
+      let isHandicap = document.getElementById("handicap").checked;
       let carparks = [];
       let carpark = {};
       const config = {
@@ -165,13 +167,22 @@ export default {
           let carparkLat = Number(item.Location.split(" ")[0]);
           let carparkLng = Number(item.Location.split(" ")[1]);
           if (this.GetDist(carparkLat, carparkLng, lat, lng) < 0.7) {
+            const docRef = doc(db, "Carparks", item.CarParkID);
+            const docSnap = await getDoc(docRef);
+            let data = docSnap.data();
+            if (isCharging && data.Charger == false) {
+              continue;
+            }
+            if (isHandicap && data.Handicap == false) {
+              continue;
+            }
             carpark["name"] = item.Development;
             let distanceAway = this.GetDist(carparkLat, carparkLng, lat, lng);
             carpark["distance"] = distanceAway;
             carpark["numLots"] = item.AvailableLots;
             carpark["carparkType"] = "Gantry";
             carpark["marginTopPrice"] = "0px";
-            carpark["marginTopButton"] = "110px";
+            carpark["marginTopButton"] = "75px";
             if (item.AvailableLots < 10) {
               carpark["textColor"] = "red";
             }
@@ -180,6 +191,9 @@ export default {
             carpark["lat"] = carparkLat;
             carpark["lng"] = carparkLng;
             carpark["id"] = item.CarParkID;
+            carpark["isCharger"] = data.Charger;
+            carpark["isHandicap"] = data.Handicap;
+            carpark["iconDivHeight"] = "25px";
             if (this.user) {
               let bookmarked = await this.IsBookMarked(item.CarParkID);
               if (bookmarked == true) {
@@ -198,36 +212,39 @@ export default {
       let dbCollection = await getDocs(collection(db, "Carpark"));
       //console.log(dbCollection.docs);
 
-      for (let document of dbCollection.docs) {
-        let doc = document.data();
-        let carparkLat = doc.Latitude;
-        let carparkLng = doc.Longitude;
-        if (this.GetDist(carparkLat, carparkLng, lat, lng) < 0.7) {
-          carpark["name"] = doc.Name;
-          let distanceAway = this.GetDist(carparkLat, carparkLng, lat, lng);
-          carpark["distance"] = distanceAway;
-          carpark["numLots"] = 0;
-          carpark["carparkType"] = "Coupon";
-          carpark["marginTopPrice"] = "35px";
-          carpark["marginTopButton"] = "0px";
-          carpark["priceHr"] = doc.Price;
-          carpark["isCoupon"] = true;
-          carpark["isGantry"] = false;
-          carpark["lat"] = doc.Latitude;
-          carpark["lng"] = doc.Longitude;
-          carpark["id"] = doc.Name;
-          if (this.user) {
-            let bookmarked = await this.IsBookMarked(doc.Name);
-            if (bookmarked == true) {
-              carpark["isFavColor"] = "red";
+      if (isHandicap == false && isCharging == false) {
+        for (let document of dbCollection.docs) {
+          let doc = document.data();
+          let carparkLat = doc.Latitude;
+          let carparkLng = doc.Longitude;
+          if (this.GetDist(carparkLat, carparkLng, lat, lng) < 0.7) {
+            carpark["name"] = doc.Name;
+            let distanceAway = this.GetDist(carparkLat, carparkLng, lat, lng);
+            carpark["distance"] = distanceAway;
+            carpark["numLots"] = 0;
+            carpark["carparkType"] = "Coupon";
+            carpark["marginTopPrice"] = "0px";
+            carpark["marginTopButton"] = "0px";
+            carpark["priceHr"] = doc.Price;
+            carpark["isCoupon"] = true;
+            carpark["isGantry"] = false;
+            carpark["lat"] = doc.Latitude;
+            carpark["lng"] = doc.Longitude;
+            carpark["id"] = doc.Name;
+            carpark["iconDivHeight"] = "25px";
+            if (this.user) {
+              let bookmarked = await this.IsBookMarked(doc.Name);
+              if (bookmarked == true) {
+                carpark["isFavColor"] = "red";
+              } else {
+                carpark["isFavColor"] = "black";
+              }
             } else {
               carpark["isFavColor"] = "black";
             }
-          } else {
-            carpark["isFavColor"] = "black";
+            carparks.push(carpark);
+            carpark = {};
           }
-          carparks.push(carpark);
-          carpark = {};
         }
       }
 
@@ -241,6 +258,9 @@ export default {
         Lat: lat,
         Lng: lng,
       });
+      document.getElementById("evcharging").checked = false;
+      document.getElementById("handicap").checked = false;
+      document.getElementById("addressbox").value = "";
     },
     IsBookMarked: async function (id) {
       const docRef = doc(
@@ -376,5 +396,8 @@ input[type="search"] {
 }
 .pac-item-query {
   font-size: 12px;
+}
+#rangeInput {
+  direction: rtl;
 }
 </style>
