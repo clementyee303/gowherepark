@@ -16,6 +16,18 @@
       </button>
     </div>
     <div id="flex-layout1">
+      <div id="icon-div" v-bind:style="{ height: iconDivHeight }">
+        <i
+          v-show="isCharging"
+          class="fa-solid fa-charging-station fa-lg"
+          id="charging"
+        ></i>
+        <i
+          v-show="isHandicap"
+          class="fa-brands fa-accessible-icon fa-lg"
+          id="handicap"
+        ></i>
+      </div>
       <h5
         v-show="isCoupon"
         id="carpark-pricehr"
@@ -86,6 +98,9 @@ export default {
     lat: Number,
     lng: Number,
     id: String,
+    isCharging: { default: false, type: Boolean },
+    isHandicap: { default: false, type: Boolean },
+    iconDivHeight: String,
   },
   mounted() {
     const auth = getAuth(firebaseApp);
@@ -133,6 +148,9 @@ export default {
               isFavColor: "red",
               lat: this.lat,
               lng: this.lng,
+              isHandicap: this.isHandicap,
+              isCharging: this.isCharging,
+              iconDivHeight: "0px",
             });
           } else {
             await setDoc(docRef, {
@@ -140,13 +158,16 @@ export default {
               name: this.name,
               carparkType: this.carparkType,
               marginTopPrice: this.marginTopPrice,
-              marginTopButton: "70px",
+              marginTopButton: "35px",
               textColor: this.textColor,
               isCoupon: this.isCoupon,
               isGantry: this.isGantry,
               isFavColor: "red",
               lat: this.lat,
               lng: this.lng,
+              isHandicap: this.isHandicap,
+              isCharging: this.isCharging,
+              iconDivHeight: "25px",
             });
           }
           this.localIsFavColor = "red";
@@ -211,6 +232,12 @@ h3 {
 }
 #flex-layout1 {
   margin-left: auto;
+}
+#icon-div {
+  margin-top: 10px;
+}
+#charging {
+  padding-right: 5px;
 }
 #bookmark {
   width: 30px;

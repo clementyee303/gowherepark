@@ -47,7 +47,7 @@ export default {
       this.lng = val.Lng;
       this.CarParks.sort(this.GetSortOrder("distance"));
       this.AddLocationsToGoogleMaps(this.lat, this.lng);
-      console.log(this.CarParks);
+      //console.log(this.CarParks);
     },
     LoadMap: function () {
       this.map = new google.maps.Map(document.getElementById("map"), {
@@ -137,7 +137,6 @@ export default {
       <select name="sortoptions" id="sortoptions" @change="SortList">
         <option value="distance">Distance</option>
         <option value="lots">No. of Lots</option>
-        <option value="rates">Parking Rates</option>
       </select>
     </div>
     <div id="scrollable" :key="componentKey">
@@ -158,6 +157,9 @@ export default {
             :lat="carpark.lat"
             :lng="carpark.lng"
             :id="carpark.id"
+            :isCharging="carpark.isCharger"
+            :isHandicap="carpark.isHandicap"
+            :iconDivHeight="carpark.iconDivHeight"
           ></Carpark>
         </li>
       </ul>
