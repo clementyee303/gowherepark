@@ -13,7 +13,7 @@
 					Carpark: {{this.CarPark}}
 					<br><br>
 					<img class ="float-left w-5" src="@/assets/images/car-icon.png" /> &nbsp;
-					Carplate: {{this.CarPlateNum}}
+					Vehicle Number: {{this.CarPlateNum}}
 					<br><br>
 					Current Carpark Rate: ${{this.Rates}}
 					<br><br>
