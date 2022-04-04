@@ -52,8 +52,16 @@ export default {
   methods: {
     getNow() {
       const today = new Date();
-      const date = +today.getDate() + '/' + (today.getMonth()+1) + '/' + today.getFullYear();
-      const time = today.getHours() + ":" + today.getMinutes();
+      const date = + today.getDate() + '/' + (today.getMonth()+1) + '/' + today.getFullYear();
+      var h = today.getHours()
+			var m = today.getMinutes()
+			if(h.toString().length == 1) {
+        h = '0'+h;
+        }
+      if(m.toString().length == 1) {
+        m = '0'+m;
+      }
+			const time = h + ":" + m;
       const dateTime = date +' '+ time;
       this.paymentTimestamp = dateTime
       return dateTime
