@@ -6,7 +6,7 @@
 				<div class="mb-6">
                     <span class="inline-block text-left  font-bold">
 					<label class="block mb-3 text-black-600" for="">Car Park: <strong>{{this.Carpark}}</strong></label>
-					<label class="block mb-3 text-black-600" for="">Car Number: <strong>{{this.Carplate}}</strong> </label>
+					<label class="block mb-3 text-black-600" for="">Vehicle Number: <strong>{{this.Carplate}}</strong> </label>
                     </span>
 
 					<label class=" text-2xl block mb-3 text-black-600" for="">Duration</label>
