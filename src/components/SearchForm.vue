@@ -160,18 +160,18 @@ export default {
       // urls.push(
       //   "http://localhost:8080/ltaodataservice/CarParkAvailabilityv2?$skip=2000"
       // );
-      urls.push("http://bt3103-assignment.web.app/ltaodataservice/CarParkAvailabilityv2");
+      urls.push("https://bt3103-assignment.web.app/ltaodataservice/CarParkAvailabilityv2");
       urls.push(
-        "http://bt3103-assignment.web.app/ltaodataservice/CarParkAvailabilityv2?$skip=500"
+        "https://bt3103-assignment.web.app/ltaodataservice/CarParkAvailabilityv2?$skip=500"
       );
       urls.push(
-        "http://bt3103-assignment.web.app/ltaodataservice/CarParkAvailabilityv2?$skip=1000"
+        "https://bt3103-assignment.web.app/ltaodataservice/CarParkAvailabilityv2?$skip=1000"
       );
       urls.push(
-        "http://bt3103-assignment.web.app/ltaodataservice/CarParkAvailabilityv2?$skip=1500"
+        "https://bt3103-assignment.web.app/ltaodataservice/CarParkAvailabilityv2?$skip=1500"
       );
       urls.push(
-        "http://bt3103-assignment.web.app/ltaodataservice/CarParkAvailabilityv2?$skip=2000"
+        "https://bt3103-assignment.web.app/ltaodataservice/CarParkAvailabilityv2?$skip=2000"
       );
       for (let i = 0; i < urls.length; i++) {
         let received = await axios.get(urls[i], config);
