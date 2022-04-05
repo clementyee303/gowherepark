@@ -142,41 +142,47 @@ export default {
       let carpark = {};
       const config = {
         headers: {
-    'Access-Control-Allow-Origin' : '*',
-    'Access-Control-Allow-Methods':'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+    // 'Access-Control-Allow-Origin' : '*',
+    // 'Access-Control-Allow-Methods':'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+    // 'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
           // crossorigin:true,
+          // 'vary': 'origin',
+          // mode: 'no-cors',
+          // 'Access-Control-Allow-Origin': '*',
+          // 'Access-Control-Allow-Headers': '*',
+          // 'Access-Control-Allow-Credentials': true,
           AccountKey: "PbRtSOrvQX6aYQSKPmJsRg==",
           accept: "application/json",
           // 'Access-Control-Allow-Credentials': 'true',
         },
       };
       let urls = [];
-      urls.push("http://localhost:8080/ltaodataservice/CarParkAvailabilityv2");
-      urls.push(
-        "http://localhost:8080/ltaodataservice/CarParkAvailabilityv2?$skip=500"
-      );
-      urls.push(
-        "http://localhost:8080/ltaodataservice/CarParkAvailabilityv2?$skip=1000"
-      );
-      urls.push(
-        "http://localhost:8080/ltaodataservice/CarParkAvailabilityv2?$skip=1500"
-      );
-      urls.push(
-        "http://localhost:8080/ltaodataservice/CarParkAvailabilityv2?$skip=2000"
-      );
-      // urls.push("http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2");
+      // urls.push("http://localhost:8080/ltaodataservice/CarParkAvailabilityv2");
       // urls.push(
-      //   "http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2?$skip=500"
+      //   "http://localhost:8080/ltaodataservice/CarParkAvailabilityv2?$skip=500"
       // );
       // urls.push(
-      //   "http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2?$skip=1000"
+      //   "http://localhost:8080/ltaodataservice/CarParkAvailabilityv2?$skip=1000"
       // );
       // urls.push(
-      //   "http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2?$skip=1500"
+      //   "http://localhost:8080/ltaodataservice/CarParkAvailabilityv2?$skip=1500"
       // );
       // urls.push(
-      //   "http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2?$skip=2000"
+      //   "http://localhost:8080/ltaodataservice/CarParkAvailabilityv2?$skip=2000"
       // );
+      urls.push("https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2");
+      urls.push(
+        "https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2?$skip=500"
+      );
+      urls.push(
+        "https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2?$skip=1000"
+      );
+      urls.push(
+        "https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2?$skip=1500"
+      );
+      urls.push(
+        "https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2?$skip=2000"
+      );
       for (let i = 0; i < urls.length; i++) {
         let received = await axios.get(urls[i], config);
         console.log(received)
