@@ -22,6 +22,11 @@ export default {
         this.displayName = "Guest";
       }
     });
+    fetch("https://yee.miim.club/data")
+      .then(response => response.json())
+      .then(result => {
+        console.log(result);
+      });
   },
   methods: {
     redirectTo: function (val) {
