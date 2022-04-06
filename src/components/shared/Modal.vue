@@ -4,7 +4,6 @@
       <h1 style="font-size:30px; color:rgb(59,130,246);"><strong>Payment Confirmation</strong></h1>
       <h2> Hi {{this.displayName}}, Thank you. </h2>
       <p><strong>Your Payment is Successful!</strong></p>
-      <p>A confirmation email has been sent to {{email}}.</p>
       <u>Session Details</u><br><br>
       Session Number: {{this.Session_Number}}<br>
       Payment Date: {{getNow()}} <br>
@@ -52,8 +51,16 @@ export default {
   methods: {
     getNow() {
       const today = new Date();
-      const date = +today.getDate() + '/' + (today.getMonth()+1) + '/' + today.getFullYear();
-      const time = today.getHours() + ":" + today.getMinutes();
+      const date = + today.getDate() + '/' + (today.getMonth()+1) + '/' + today.getFullYear();
+      var h = today.getHours()
+			var m = today.getMinutes()
+			if(h.toString().length == 1) {
+        h = '0'+h;
+        }
+      if(m.toString().length == 1) {
+        m = '0'+m;
+      }
+			const time = h + ":" + m;
       const dateTime = date +' '+ time;
       this.paymentTimestamp = dateTime
       return dateTime
