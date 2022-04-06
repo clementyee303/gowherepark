@@ -81,13 +81,15 @@ async updateDB2() {
 
       const timestamp = (new Date()).getTime()
 
-      const docRef2 = await setDoc(doc(db, "Transactions",String(this.displayName),y,x,"Payments", String(timestamp)), {
+      //const docRef2 = await setDoc(doc(db, "Transactions",String(this.displayName),y,x,"Payments", String(timestamp)), { 
+      const docRef2 = await setDoc(doc(db, "Transactions",String(this.displayName),"Year",y,"Month",x,"Payments", String(timestamp)), {
+
       Carplate: b,
       Carpark: c,
       EndTime: e,
       Paid: a,
       StartTime: d,
-      Type: "Visa"
+      Type: "Paynow"
       })
       const docRef3 = await setDoc(doc(db, "Session",String(this.displayName), "N", String(g) ), {
         Number: String(timestamp) 
