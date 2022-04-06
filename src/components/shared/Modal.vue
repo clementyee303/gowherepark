@@ -4,7 +4,6 @@
       <h1 style="font-size:30px; color:rgb(59,130,246);"><strong>Payment Confirmation</strong></h1>
       <h2> Hi {{this.displayName}}, Thank you. </h2>
       <p><strong>Your Payment is Successful!</strong></p>
-      <p>A confirmation email has been sent to {{email}}.</p>
       <u>Session Details</u><br><br>
       Session Number: {{this.Session_Number}}<br>
       Payment Date: {{getNow()}} <br>

@@ -5,7 +5,7 @@
   <div class="p-10 rounded-md shadow-md bg-white">
    <div class="mb-6">
     <label class="block mb-3 text-gray-600" for="">Name on Card</label>
-    <input id="name" type="text" required style="text-transform:uppercase" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-wider"/>
+    <input id="name" type="text" required style="text-transform:uppercase" class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-wider" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'/>
    </div>
    <div class="mb-6">
     <label class="block mb-3 text-gray-600" for="">Card Number</label>
@@ -32,7 +32,7 @@
     <div class="w-1/3 px-3">
      <label class="block mb-3 text-gray-600" for="">CVC</label>
      <input id ="cvc" type="tel" required class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest" 
-     :maxlength ="4"/>
+     :maxlength ="4" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/>
     </div>
    </div>
    <span id="error"></span>
