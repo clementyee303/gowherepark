@@ -18,8 +18,8 @@
     <select name="month" id="month" @change=filter()>
       <option value="01">January</option>
       <option value="02">February</option>
-      <option selected value="03">March</option> <!-- Default Value -->
-      <option value="04">April</option>
+      <option value="03">March</option> <!-- Default Value -->
+      <option selected value="04">April</option>
       <option value="05">May</option>
       <option value="06">June</option>
       <option value="07">July</option>
@@ -44,7 +44,9 @@
   <div id = "display"> 
       <table id = "table" class = "auto-index">
           <thead>
-            <th>Session ID/ Date</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            
             <th>Amount Paid</th>
             <th>Carpark Location</th>
             <th>Payment Type</th>
@@ -80,7 +82,7 @@ export default {
         increaseAmt: Math.round(Math.random()*10,2),
         increasePercent:0 ,
         selectedYear: "2022",
-        selectedMonth: "03",
+        selectedMonth: "04",
         done: false
       }
     },
@@ -139,7 +141,9 @@ export default {
           this.barChartData[yy.EndTime] = parseFloat(yy.Paid)
           var row = table.insertRow(serialNum);
 
-          var session = yy.EndTime;
+          var start = yy.StartTime;
+          var end = yy.EndTime;
+          //var duration = yy.EndTime;
           var paid = yy.Paid;
           var carpark = yy.Carpark;
           var type = yy.Type;
@@ -149,12 +153,16 @@ export default {
           var cell3 = row.insertCell(2);
           var cell4 = row.insertCell(3);
           var cell5 = row.insertCell(4);
+          var cell6 = row.insertCell(5);
+          //var cell7 = row.insertCell(6);
 
-          cell1.innerHTML = session // Date is in string -  23/3/2022 15:47
-          cell2.innerHTML = "$" + paid;
-          cell3.innerHTML = carpark;
-          cell4.innerHTML = type;
-          cell4.style.color = '#00FF00';
+          cell1.innerHTML = start // Date is in string -  23/3/2022 15:47
+          cell2.innerHTML = end;
+          //cell3.innerHTML = duration;
+          cell3.innerHTML = "$" + paid;
+          cell4.innerHTML = carpark;
+          cell5.innerHTML = type;
+          cell5.style.color = '#00FF00';
           var navigationButton = document.createElement("button");
           navigationButton.className = "navigationButton";
           navigationButton.id = String("destination");
@@ -163,7 +171,7 @@ export default {
               var url = "https://www.google.com/maps/dir/?api=1&destination=" + carpark + "&travelmode=driving" 
               window.open(url, "_blank");
           })
-          cell5.appendChild(navigationButton);
+          cell6.appendChild(navigationButton);
 
           serialNum++;
 
@@ -184,6 +192,9 @@ export default {
         let selectedYear = document.getElementById('year').value;
         this.selectedYear = selectedYear;
         console.log(selectedMonth);
+        // Initiallise 
+        this.carparkName = []
+        this.getData()
         // Get query
         const Pptransact = collection(db,"Transactions",String(this.displayName),"Year",selectedYear,"Month",selectedMonth,"Payments");  
         const q = query(Pptransact);
@@ -192,6 +203,7 @@ export default {
       },
 
       filterBySearch: async function(){
+        console.log(this.carparkName)
         // Get searchbar value 
         let searchText = document.getElementById('searchBar').value;
         searchText = searchText.toUpperCase()
