@@ -11,7 +11,7 @@
     <label class="block mb-3 text-gray-600" for="">Card Number</label>
     <input id="number" v-model="cardNumber" required type="text" pattern="[0-9 ]+" @keypress="isNumber($event); formatCard()" 
      class="border border-gray-500 rounded-md inline-block py-2 px-3 w-full text-gray-600 tracking-widest"
-     :maxlength="19" >
+     :maxlength="19">
    </div>
    <div class="mb-6 flex flex-wrap -mx-3w-full">
     <div class="w-2/3 px-3">
@@ -110,10 +110,10 @@ methods: {
     if (document.getElementById("name").value=="") {
       error.textContent = "Please enter a valid name"
       error.style.color = "red"
-    } else if (document.getElementById("number").value=="") {
+    } else if (document.getElementById("number").value=="" || document.getElementById("number").value.length<9) {
       error.textContent = "Please enter a valid card number"
       error.style.color = "red"
-    } else if (document.getElementById("cvc").value=="") {
+    } else if (document.getElementById("cvc").value=="" || document.getElementById("cvc").value.length<=2) {
       error.textContent = "Please enter a valid CVC"
       error.style.color = "red"
     } else if (document.getElementById("month").value=="Month" || document.getElementById("year").value=="Year") {
