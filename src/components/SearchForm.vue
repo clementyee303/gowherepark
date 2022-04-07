@@ -51,8 +51,8 @@
             oninput="heightOutputId.value = rangeInput.value"
           />
           <br />
-          <label for="rangeInput">Minimum Car Park Height >= </label>
-          <output id="heightOutputId">4.5</output>
+          <label for="rangeInput">Minimum Car Park Height:</label>
+          <output id="heightOutputId">1.8</output>
         </form>
       </div>
     </div>
@@ -140,53 +140,10 @@ export default {
       let isHandicap = document.getElementById("handicap").checked;
       let carparks = [];
       let carpark = {};
-      const config = {
-        headers: {
-    // 'Access-Control-Allow-Origin' : '*',
-    // 'Access-Control-Allow-Methods':'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-    // 'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
-          // crossorigin:true,
-          // 'vary': 'origin',
-          // mode: 'no-cors',
-          // 'Access-Control-Allow-Origin': '*',
-          // 'Access-Control-Allow-Headers': '*',
-          // 'Access-Control-Allow-Credentials': true,
-          AccountKey: "PbRtSOrvQX6aYQSKPmJsRg==",
-          accept: "application/json",
-          // 'Access-Control-Allow-Credentials': 'true',
-        },
-      };
-      let urls = [];
-      // urls.push("http://localhost:8080/ltaodataservice/CarParkAvailabilityv2");
-      // urls.push(
-      //   "http://localhost:8080/ltaodataservice/CarParkAvailabilityv2?$skip=500"
-      // );
-      // urls.push(
-      //   "http://localhost:8080/ltaodataservice/CarParkAvailabilityv2?$skip=1000"
-      // );
-      // urls.push(
-      //   "http://localhost:8080/ltaodataservice/CarParkAvailabilityv2?$skip=1500"
-      // );
-      // urls.push(
-      //   "http://localhost:8080/ltaodataservice/CarParkAvailabilityv2?$skip=2000"
-      // );
-      urls.push("https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2");
-      urls.push(
-        "https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2?$skip=500"
-      );
-      urls.push(
-        "https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2?$skip=1000"
-      );
-      urls.push(
-        "https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2?$skip=1500"
-      );
-      urls.push(
-        "https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2?$skip=2000"
-      );
+      let response = await axios.get("https://yee.miim.club/data");
+      let urls = response.data;
       for (let i = 0; i < urls.length; i++) {
-        let received = await axios.get(urls[i], config);
-        console.log(received)
-        let array = received.data.value;
+        let array = urls[i].value;
         for (const item of array) {
           let carparkLat = Number(item.Location.split(" ")[0]);
           let carparkLng = Number(item.Location.split(" ")[1]);
@@ -421,7 +378,7 @@ input[type="search"] {
 .pac-item-query {
   font-size: 12px;
 }
-/* #rangeInput {
+#rangeInput {
   direction: rtl;
-} */
+}
 </style>
