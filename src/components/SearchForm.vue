@@ -46,12 +46,12 @@
             min="1.8"
             max="4.5"
             step="0.1"
-            value="4.5"
+            value="1.8"
             onchange=""
             oninput="heightOutputId.value = rangeInput.value"
           />
           <br />
-          <label for="rangeInput">Minimum Car Park Height:</label>
+          <label for="rangeInput">Minimum Car Park Height >= </label>
           <output id="heightOutputId">1.8</output>
         </form>
       </div>
@@ -378,7 +378,7 @@ input[type="search"] {
 .pac-item-query {
   font-size: 12px;
 }
-#rangeInput {
+/* #rangeInput {
   direction: rtl;
-}
+} */
 </style>
