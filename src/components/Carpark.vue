@@ -11,10 +11,9 @@
         {{ numLots }}
       </h5>
       <h5 id="carpark-type">{{ carparkType }} Carpark</h5>
-      <!--<button type="button" onclick="" id="availability">
+      <button type="button" onclick="" id="availability">
         View Historical Parking Availability
-      </button>-->
-      <p class="trend">View Historical Parking Availability</p> <img src="@/assets/images/historicaltrend.png"/>
+      </button>
     </div>
     <div id="flex-layout1">
       <div id="icon-div" v-bind:style="{ height: iconDivHeight }">
@@ -230,24 +229,6 @@ h3 {
   font-size: 20px;
   font-weight: bold;
   margin-top: 5px;
-}
-img{
-   display: none;
-   max-height: 100%;
-   max-width: 40%;
-}
-.trend {
-  background: #3f51b5;
-  border-radius: 2px;
-  font-family: "arial-black";
-  font-size: 12px;
-  color: #FFF;
-  padding: 8px 10px;
-  width: 50%;
-  cursor: pointer;   
-}
-p.trend:hover + img{ 
-   display: inline-block;
 }
 #flex-layout1 {
   margin-left: auto;
