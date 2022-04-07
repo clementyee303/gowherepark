@@ -150,6 +150,7 @@ export default {
             :marginTopPrice="carpark.marginTopPrice"
             :marginTopButton="carpark.marginTopButton"
             :priceHr="carpark.priceHr"
+            :carparkHeight="carpark.carparkHeight"
             :textColor="carpark.textColor"
             :isCoupon="carpark.isCoupon"
             :isGantry="carpark.isGantry"

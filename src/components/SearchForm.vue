@@ -138,6 +138,8 @@ export default {
     GetCarparks: async function (lat, lng) {
       let isCharging = document.getElementById("evcharging").checked;
       let isHandicap = document.getElementById("handicap").checked;
+      let minHeight = document.getElementById("rangeInput").value;
+      console.log(minHeight);
       let carparks = [];
       let carpark = {};
       let response = await axios.get("https://yee.miim.club/data");
@@ -157,13 +159,19 @@ export default {
             if (isHandicap && data.Handicap == false) {
               continue;
             }
+            if (data.Height != "-") {
+              if (minHeight > Number(data.Height)) {
+                continue;
+              }
+            }
             carpark["name"] = item.Development;
             let distanceAway = this.GetDist(carparkLat, carparkLng, lat, lng);
             carpark["distance"] = distanceAway;
             carpark["numLots"] = item.AvailableLots;
+            carpark["carparkHeight"] = data.Height;
             carpark["carparkType"] = "Gantry";
             carpark["marginTopPrice"] = "0px";
-            carpark["marginTopButton"] = "75px";
+            carpark["marginTopButton"] = "70px";
             if (item.AvailableLots < 10) {
               carpark["textColor"] = "red";
             }
@@ -191,7 +199,6 @@ export default {
         }
       }
       let dbCollection = await getDocs(collection(db, "Carpark"));
-      //console.log(dbCollection.docs);
 
       if (isHandicap == false && isCharging == false) {
         for (let document of dbCollection.docs) {
@@ -207,6 +214,7 @@ export default {
             carpark["marginTopPrice"] = "0px";
             carpark["marginTopButton"] = "0px";
             carpark["priceHr"] = doc.Price;
+            carpark["carparkHeight"] = "-";
             carpark["isCoupon"] = true;
             carpark["isGantry"] = false;
             carpark["lat"] = doc.Latitude;
@@ -258,13 +266,6 @@ export default {
       return false;
     },
     SearchCarparks: async function () {
-      /*
-      var address = document.getElementById("addressbox").value;
-      this.GetCarparks(
-        Number(address.split(",")[0]),
-        Number(address.split(",")[1])
-      );*/
-
       var geocoder = new google.maps.Geocoder();
       var address = document.getElementById("addressbox").value;
       const that = this;
