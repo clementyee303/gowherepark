@@ -1,18 +1,28 @@
 <!DOCTYPE html>
 <html lang="">
   <head>
-    <script>
+    <!-- <script>
       fetch("https://firestore.googleapis.com/v1/projects/bt3103-assignment/databases/(default)/documents/google/google")
         .then(response => response.json())
         .then(details => document.getElementById("googleapi").src = details["fields"]["api"]["stringValue"])
         .then(x => document.getElementById("googleapi").remove())
+    </script> -->
+    <script>
+      fetch("https://firestore.googleapis.com/v1/projects/bt3103-assignment/databases/(default)/documents/google/google")
+        .then(response => response.json())
+        .then(details => 
+        {var s = document.createElement('script');
+        s.id = "google"
+        s.src = details["fields"]["api"]["stringValue"]
+        document.getElementsByTagName("head")[0].appendChild(s);})
+        .then(x => document.getElementById("google").remove())
     </script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
-    <script id="googleapi"></script>
+    <!-- <script id="googleapi"></script> -->
     <script src="https://kit.fontawesome.com/a38e713db9.js" crossorigin="anonymous"></script>
 
   </head>
