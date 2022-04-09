@@ -3,7 +3,7 @@ export default {
 	data: () => {
 		return {
 			copyrightDate: new Date().getFullYear(),
-			projectName: 'BT3103. All rights reserved     ',
+			projectName: 'BT3103. All rights reserved',
 			author: '2022 BT3103 Group L2-10',
 		};
 	},
@@ -17,15 +17,15 @@ export default {
 		>
 			&copy; {{ copyrightDate }}.
 			<a
-				href="https://github.com/realstoman/vuejs-tailwindcss-portfolio"
+				href="https://nusmods.com/modules/BT3103/application-systems-development-for-business-analytics"
 				target="__blank"
 				class="font-general-medium hover:underline hover:text-indigo-600 dark:hover:text-indigo-300 duration-500"
 			>
 				{{ projectName }}
 			</a>
-			. Developed by
+			| Contact the Developer Team @
 			<a
-				href="https://stoman.me"
+				href="https://github.com/clementyee303/gowherepark"
 				target="__blank"
 				class="font-general-medium text-secondary-dark dark:text-secondary-light uppercase hover:underline hover:text-indigo-600 dark:hover:text-indigo-300 duration-500"
 				>{{ author }}</a
