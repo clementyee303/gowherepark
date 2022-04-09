@@ -4,9 +4,9 @@ GoWherePark is a web application developed to solve issues commonly faced by mot
 
 The functions in the application can be categorized into Setup, Core and Extension. 
 
-Setup - User Registration, User Login
-Core - Locate Nearest Available Car Park, Payment of Coupon Parking Fees
-Extensions - Bookmark Car Park, View Historical Parking Expenses
+Setup - User Registration, User Login <br>
+Core - Locate Nearest Available Car Park, Payment of Coupon Parking Fees <br>
+Extensions - Bookmark Car Park, View Historical Parking Expenses <br>
 
 ## Project setup
 ```
