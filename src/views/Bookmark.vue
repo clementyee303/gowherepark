@@ -46,6 +46,7 @@ export default {
         carpark["isFavColor"] = doc.isFavColor;
         carpark["isHandicap"] = doc.isHandicap;
         carpark["isCharging"] = doc.isCharging;
+        carpark["carparkHeight"] = doc.carparkHeight;
         this.CarParks.push(carpark);
         carpark = {};
       });
@@ -80,6 +81,7 @@ export default {
           :isCharging="carpark.isCharging"
           :isHandicap="carpark.isHandicap"
           :iconDivHeight="carpark.iconDivHeight"
+          :carparkHeight="carpark.carparkHeight"
           @refreshBookmarks="refreshBookmarks"
         ></Carpark>
       </li>

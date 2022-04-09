@@ -5,15 +5,13 @@
       <h5 id="carpark-distance">{{ distance }}</h5>
       <h5
         v-show="isGantry"
-        id="carpark-lots"
+        id="carparklots"
         v-bind:style="{ color: textColor }"
       >
         {{ numLots }}
       </h5>
       <h5 id="carpark-type">{{ carparkType }} Carpark</h5>
-      <button type="button" onclick="" id="availability">
-        View Historical Parking Availability
-      </button>
+      <h5 id="carpark-type">Carpark Height: {{ carparkHeight }}</h5>
     </div>
     <div id="flex-layout1">
       <div id="icon-div" v-bind:style="{ height: iconDivHeight }">
@@ -88,9 +86,8 @@ export default {
     distance: String,
     numLots: String,
     carparkType: String,
-    marginTopPrice: String,
-    marginTopButton: String,
     priceHr: Number,
+    carparkHeight: String,
     textColor: { default: "black", type: String },
     isCoupon: Boolean,
     isGantry: Boolean,
@@ -101,6 +98,8 @@ export default {
     isCharging: { default: false, type: Boolean },
     isHandicap: { default: false, type: Boolean },
     iconDivHeight: String,
+    marginTopPrice: String,
+    marginTopButton: String,
   },
   mounted() {
     const auth = getAuth(firebaseApp);
@@ -151,6 +150,7 @@ export default {
               isHandicap: this.isHandicap,
               isCharging: this.isCharging,
               iconDivHeight: "0px",
+              carparkHeight: this.carparkHeight,
             });
           } else {
             await setDoc(docRef, {
@@ -168,6 +168,7 @@ export default {
               isHandicap: this.isHandicap,
               isCharging: this.isCharging,
               iconDivHeight: "25px",
+              carparkHeight: this.carparkHeight,
             });
           }
           this.localIsFavColor = "red";
@@ -229,6 +230,10 @@ h3 {
   font-size: 20px;
   font-weight: bold;
   margin-top: 5px;
+  margin-bottom: 8px;
+}
+#carparklots {
+  font-weight: bold;
 }
 #flex-layout1 {
   margin-left: auto;
@@ -246,18 +251,6 @@ h3 {
 }
 #flex-layout2 {
   margin-right: 20px;
-}
-#availability {
-  /* remove default behavior */
-  appearance: none;
-  -webkit-appearance: none;
-  /* usual styles */
-  border: none;
-  background-color: #3f51b5;
-  color: #fff;
-  border-radius: 5px;
-  width: 300px;
-  margin-top: 5px;
 }
 #getdirection {
   /* remove default behavior */
