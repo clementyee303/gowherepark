@@ -2,7 +2,7 @@
 <div class="monthlyExpenditures">
   <div class="chart">
     <div class="header">
-      <p style="font-size: x-large; text-align: left;">Daily Expenditures</p>
+      <p style="font-size: x-large; text-align: left;">Daily Expenditure for {{numberToMonth[selectedMonth]}} {{selectedYear}}</p>
       <p v-if= "total!=0" id="totalAmt" style="font-size: small; text-align: left;"> {{total}} SGD ({{startDate}} - {{endDate}})</p>
       <!--
       <p style="font-size: x-small; color: #FF6161; text-align: left;">+{{increaseAmt}}({{increasePercent}}%)^past year</p>
@@ -83,7 +83,21 @@ export default {
         increasePercent:0 ,
         selectedYear: "2022",
         selectedMonth: "04",
-        done: false
+        done: false,
+        numberToMonth: {
+          '01': 'January',
+          '02': 'February',
+          '03': 'March',
+          '04': 'April',
+          '05': 'May',
+          '06': 'June',
+          '07': 'July',
+          '08': 'August',
+          '09': 'September',
+          '10': 'October',
+          '11': 'November',
+          '12': 'December',
+          }
       }
     },
 
