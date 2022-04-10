@@ -251,6 +251,7 @@ export default {
       document.getElementById("handicap").checked = false;
       document.getElementById("addressbox").value = "";
       document.getElementById("rangeInput").value = "1.8";
+      document.getElementById("heightOutputId").value = "1.8";
     },
     IsBookMarked: async function (id) {
       const docRef = doc(
