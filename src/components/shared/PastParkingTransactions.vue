@@ -115,8 +115,8 @@ export default {
         //console.log("this is total: " + this.total)
         this.increasePercent = Math.round(this.increaseAmt*100/ this.total);
         //console.log("this is increasePercent: " + this.increasePercent)
-        this.startDate = Object.keys(this.barChartData)[0].substring(0, 9);
-        this.endDate = Object.keys(this.barChartData)[Object.keys(this.barChartData).length - 1].substring(0, 9);
+        this.startDate = Object.keys(this.barChartData)[0]
+        this.endDate = Object.keys(this.barChartData)[Object.keys(this.barChartData).length - 1];
       },
 
       getData: async function(){
@@ -152,7 +152,11 @@ export default {
         snapshot.forEach((docs) => {
           // 1. Create table row from data 
           let yy = docs.data();
-          this.barChartData[yy.EndTime] = parseFloat(yy.Paid)
+          if(yy.StartTime.slice(0,-5) in this.barChartData){
+            this.barChartData[yy.StartTime.slice(0,-6)] += parseFloat(yy.Paid)
+          } else {
+            this.barChartData[yy.StartTime.slice(0,-6)] = parseFloat(yy.Paid)
+          }
           var row = table.insertRow(serialNum);
 
           var start = yy.StartTime;
