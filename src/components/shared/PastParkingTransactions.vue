@@ -2,7 +2,7 @@
 <div class="monthlyExpenditures">
   <div class="chart">
     <div class="header">
-      <p style="font-size: x-large; text-align: left;">Monthly Expenditures</p>
+      <p style="font-size: x-large; text-align: left;">Daily Expenditures</p>
       <p v-if= "total!=0" id="totalAmt" style="font-size: small; text-align: left;"> {{total}} SGD ({{startDate}} - {{endDate}})</p>
       <!--
       <p style="font-size: x-small; color: #FF6161; text-align: left;">+{{increaseAmt}}({{increasePercent}}%)^past year</p>
