@@ -152,7 +152,7 @@ export default {
         snapshot.forEach((docs) => {
           // 1. Create table row from data 
           let yy = docs.data();
-          if(yy.StartTime.slice(0,-5) in this.barChartData){
+          if(yy.StartTime.slice(0,-6) in this.barChartData){
             this.barChartData[yy.StartTime.slice(0,-6)] += parseFloat(yy.Paid)
           } else {
             this.barChartData[yy.StartTime.slice(0,-6)] = parseFloat(yy.Paid)
