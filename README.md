@@ -1,6 +1,6 @@
 # GoWherePark
 ## Description
-GoWherePark is a web application developed to solve issues commonly faced by motorists in Singapore. It aims to be a one-stop web application that provides car drivers with all parking-related services in Singapore.
+GoWherePark is a web application developed to solve issues commonly faced by motorists in Singapore. It aims to be a one-stop web application that provides motorists with a comprehensive range of parking-related services in Singapore.
 
 The functions in the application can be categorized into Setup, Core and Extension. 
 
