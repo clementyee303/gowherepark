@@ -8,6 +8,7 @@ Setup - User Registration, User Login <br>
 Core - Locate Nearest Available Car Park, Payment of Coupon Parking Fees <br>
 Extensions - Bookmark Car Park, View Historical Parking Expenses <br>
 
+Live parking lot data available from LTA @ our proxy API - https://yee.miim.club/data 
 ## Project setup
 ```
 npm install
