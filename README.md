@@ -2,6 +2,8 @@
 ## Description
 GoWherePark is a web application developed to solve issues commonly faced by motorists in Singapore. It aims to be a one-stop web application that provides motorists with a comprehensive range of parking-related services in Singapore.
 
+Deployed Web Application: https://bt3103-assignment.web.app
+
 The functions in the application can be categorized into Setup, Core and Extension. 
 
 Setup - User Registration, User Login <br>
